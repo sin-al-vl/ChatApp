@@ -2,7 +2,7 @@
  * Created by Александр on 02.11.2015.
  */
 public class Command {
-    CommandType commandType;
+    private CommandType commandType;
 
     public Command(CommandType commandType) {
         this.commandType = commandType;

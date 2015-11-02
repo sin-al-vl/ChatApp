@@ -50,7 +50,6 @@ public class Connection  {
             } else
                 line += (char) i;
         }
-
         return new Command(Command.CommandType.valueOf(line.toUpperCase()));
     }
 }
