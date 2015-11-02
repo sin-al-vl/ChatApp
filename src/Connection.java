@@ -13,11 +13,13 @@ public class Connection  {
 
 
     public void sendNickHello(String nick) throws IOException {
+        socket.getOutputStream().write("User\n".getBytes());
         socket.getOutputStream().write(("ChatApp 2015 user " + nick + "\n").getBytes());
 
     }
 
     public void sendNickBusy(String nick) throws IOException {
+        socket.getOutputStream().write("User\n".getBytes());
         socket.getOutputStream().write(("ChatApp 2015 user " + nick + " busy\n").getBytes());
     }
 
@@ -39,6 +41,7 @@ public class Connection  {
     }
 
     public Command receive() throws IOException {
+
         String line = "";
         int i;
         while (true) {
@@ -50,6 +53,43 @@ public class Connection  {
             } else
                 line += (char) i;
         }
-        return new Command(Command.CommandType.valueOf(line.toUpperCase()));
+
+        if(Command.CommandType.valueOf(line.toUpperCase()).equals(Command.CommandType.MESSAGE)) {
+
+            line = "";
+            while (true) {
+                if((i = socket.getInputStream().read()) == '\n')
+                    break;
+                else
+                    line += (char) i;
+            }
+
+            return new MessageCommand(line);
+
+        } else if(Command.CommandType.valueOf(line.toUpperCase()).equals(Command.CommandType.NICK)) {
+
+            line = "";
+            while (true) {
+                if((i = socket.getInputStream().read()) == '\n')
+                    break;
+                else
+                    line += (char) i;
+            }
+
+            String version = line.substring(0, line.toLowerCase().indexOf(" user "));
+            Boolean busy = line.toLowerCase().endsWith(" busy");
+            String nick;
+
+            if (busy)
+                nick = line.substring(line.toLowerCase().indexOf(" user ", line.toLowerCase().indexOf(" busy")));
+            else
+                nick = line.substring(line.toLowerCase().indexOf(" user ", line.indexOf("\n")));
+
+            return new NickCommand(version, nick, busy);
+
+        } else
+
+            return new Command(Command.CommandType.valueOf(line.toUpperCase()));
+
     }
 }
