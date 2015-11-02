@@ -13,20 +13,20 @@ public class Connection  {
 
 
     public void sendNickHello(String nick) throws IOException {
-        socket.getOutputStream().write(("Hello" + nick + "\n").getBytes());
+        socket.getOutputStream().write(("ChatApp 2015 user " + nick + "\n").getBytes());
 
     }
 
     public void sendNickBusy(String nick) throws IOException {
-        socket.getOutputStream().write(("Busy" + nick + "\n").getBytes());
+        socket.getOutputStream().write(("ChatApp 2015 user " + nick + " busy\n").getBytes());
     }
 
     public void accept() throws IOException {
-        socket.getOutputStream().write("Accept\n".getBytes());
+        socket.getOutputStream().write("Accepted\n".getBytes());
     }
 
     public void reject() throws IOException {
-        socket.getOutputStream().write("Reject\n".getBytes());
+        socket.getOutputStream().write("Rejected\n".getBytes());
     }
 
     public void sendMessage(String message) throws IOException {
@@ -41,10 +41,16 @@ public class Connection  {
     public Command receive() throws IOException {
         String line = "";
         int i;
-        while ((i = socket.getInputStream().read()) != '\n') {
-            line += (char) i;
+        while (true) {
+            if((i = socket.getInputStream().read()) == '\n') {
+                if (Command.CommandType.contains(line.toUpperCase()))
+                    break;
+                else
+                    line = "";
+            } else
+                line += (char) i;
         }
 
-
+        return new Command(Command.CommandType.valueOf(line.toUpperCase()));
     }
 }
