@@ -14,18 +14,7 @@ public class Command {
     }
 
 
-    public static enum CommandType{
-        ACCEPT, DISCONNECT, MESSAGE, NICK, REJECT;
-
-        public static boolean contains(String test) {
-
-            for (CommandType c : CommandType.values()) {
-                if (c.name().equals(test)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+    static enum CommandType{
+        ACCEPT, DISCONNECT, MESSAGE, NICK, REJECT
     }
 }
