@@ -7,7 +7,7 @@ import java.util.Observable;
 public class CommandListenerThread extends Observable implements Runnable {
     private Connection connection;
     private Command lastCommand;
-    private boolean isDisconnected;
+    private volatile boolean isDisconnected;
 
     public CommandListenerThread() {
         connection = null;
