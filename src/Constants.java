@@ -6,7 +6,6 @@
 
 public class Constants {
     public static final int PORT = 28411;
-    public static String FIRST_PART_HELLO_MESSAGE = "ChatApp";
-    public static String SECOND_PART_HELLO_MESSAGE = "2015";
-    public static String THIRD_PART_HELLO_MESSAGE = "user";
+    static final String ChatApp_VERSION = "ChatApp 2015";
+    static final String CHARSET_NAME = "UTF-8";
 }
