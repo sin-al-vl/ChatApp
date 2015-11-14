@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.HashMap;
@@ -8,10 +9,9 @@ import java.util.HashMap;
  */
 public class Caller {
     private String localNick;
-    private SocketAddress remoteAddress;
+    private InetSocketAddress remoteAddress;
     private String remoteNick;
     private CallStatus status;
-    private Socket socket;
 
     public Caller (String localNick){
         this.localNick = localNick;
@@ -24,32 +24,17 @@ public class Caller {
     public Caller (String localNick, String ip){
 
         this(localNick);
-
-        try {
-            socket = new Socket(ip, port);
-        } catch (IOException e) {
-            status = CallStatus.NOT_ACCESSIBLE;  //or CallStatus.NO_SERVICE ???
-            e.printStackTrace();                 //Wrong ip. User should check it
-        }
-
-        remoteAddress = socket.getRemoteSocketAddress();
+        remoteAddress = new InetSocketAddress(ip, Constants.PORT);
     }
 
-    public Caller (String localNick, SocketAddress remoteAddress){
+    public Caller (String localNick, InetSocketAddress remoteAddress){
 
         this(localNick);
         this.remoteAddress = remoteAddress;
-
-        try {
-            socket = new Socket(String.valueOf(remoteAddress), port);
-        } catch (IOException e) {
-            status = CallStatus.NOT_ACCESSIBLE;             //or CallStatus.NO_SERVICE ???
-            e.printStackTrace();                            //Wrong remoteAddress. User should check it
-        }
     }
 
     public Connection call() throws IOException{            //supposedly method must be called in constructors
-        Connection connection = new Connection(socket);
+        Connection connection = new Connection(new Socket(remoteAddress.getAddress(), Constants.PORT));
         connection.sendNickHello(localNick);
         Command command = connection.receive();             //receive NickCommand
 
@@ -58,7 +43,7 @@ public class Caller {
             remoteNick = ((NickCommand)command).getNick();
 
             if(((NickCommand)command).isBusy()) {
-                status = CALL_STATUS_HASH_MAP.get(Connection.ChatApp_VERSION);
+                status = CALL_STATUS_HASH_MAP.get(Constants.ChatApp_VERSION);
             } else {
                 command = connection.receive();             //if NOT busy then receive ACCEPT or REJECT
                 status = CALL_STATUS_HASH_MAP.get(command.toString());
@@ -68,7 +53,6 @@ public class Caller {
                 return connection;
             else
                 return null;
-
         } else {
             status = CallStatus.NOT_ACCESSIBLE;             //or CallStatus.NO_SERVICE ???
             return null;
@@ -79,7 +63,7 @@ public class Caller {
         this.localNick = localNick;
     }
 
-    public void setRemoteAddress(SocketAddress remoteAddress) {
+    public void setRemoteAddress(InetSocketAddress remoteAddress) {
         this.remoteAddress = remoteAddress;
     }
 
@@ -109,10 +93,15 @@ public class Caller {
 
     static final int port = 28411;
     static final HashMap<String, CallStatus> CALL_STATUS_HASH_MAP = new HashMap<String, CallStatus>(){{
-        put(Connection.ChatApp_VERSION, CallStatus.BUSY);
+        put(Constants.ChatApp_VERSION, CallStatus.BUSY);
 //        put( , CallStatus.NO_SERVICE);
 //        put( , CallStatus.NOT_ACCESSIBLE);
         put(Command.CommandType.ACCEPT.toString(), CallStatus.OK);
         put(Command.CommandType.REJECT.toString(), CallStatus.REJECTED);
     }};
+
+    public static void main(String[] args) throws IOException{
+        Caller c = new Caller("Rogdan", "127.0.0.1");
+        c.call();
+    }
 }

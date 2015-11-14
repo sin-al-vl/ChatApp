@@ -31,19 +31,20 @@ public class CallListener {
     public Connection getConnection () throws IOException{
         ServerSocket serverSocket = new ServerSocket(Constants.PORT);  //I'm not sure it's right
         Socket socket = serverSocket.accept();
+        System.out.println("Accepted");
 
-        Connection connection = new Connection(serverSocket.accept());
+        Connection connection = new Connection(socket);
         Scanner in = new Scanner(new BufferedInputStream(socket.getInputStream()));
 
          new Thread(new Runnable() {
              @Override
              public void run() {
-                 if (in.next().equals(Constants.FIRST_PART_HELLO_MESSAGE))
-                     if (in.next().equals(Constants.SECOND_PART_HELLO_MESSAGE))
-                         if (in.next().equals(Constants.THIRD_PART_HELLO_MESSAGE))
-                             remoteNick = in.nextLine();
-                         else
-                             remoteNick = "Untitled";
+                 remoteNick = "Untitled";
+
+                 if ((in.next() + " " + in.next()).equals(Constants.ChatApp_VERSION)) {
+                     in.next();
+                     remoteNick = in.nextLine();
+                 }
              }
          }).start();
 
@@ -90,7 +91,9 @@ public class CallListener {
         return remoteNick;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException{
         // Maybe this main for testing?
+       CallListener c = new CallListener("Lammer");
+       c.getConnection();
     }
 }
