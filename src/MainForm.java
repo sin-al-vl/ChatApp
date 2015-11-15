@@ -26,6 +26,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
+import java.sql.Date;
 import java.awt.GridBagConstraints;
 import java.awt.Color;
 import javax.swing.border.LineBorder;
@@ -88,7 +89,7 @@ public class MainForm {
 		panel.setBackground(new Color(255, 255, 255));
 		panel.setOpaque(false);
 		panel.setBounds(25, 25, 404, 382);
-		//frame.getContentPane().add(panel);
+		frame.getContentPane().add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_1 = new JPanel();
@@ -214,7 +215,7 @@ public class MainForm {
 		fonpanel.setName("fonpanel");
 		fonpanel.setBackground(new Color(204, 255, 153));
 		fonpanel.setBounds(0, 0, 454, 432);
-		//frame.getContentPane().add(fonpanel);
+		frame.getContentPane().add(fonpanel);
 		fonpanel.setLayout(new BorderLayout(0, 0));
 		
 		JLabel label = new JLabel("");
@@ -279,7 +280,8 @@ public class MainForm {
 						name = name + "...";
 					}
 					else name = loclog.getText();
-					dlm.addElement(name + ": " + msg.getText());
+					long date = System.currentTimeMillis();
+					dlm.addElement("<html>" + name + " " + new Date(date).toLocaleString() + ":<br>" + msg.getText() + " </span></html>");
 					list.setModel(dlm);
 				}
 				msg.setText("");
@@ -308,8 +310,8 @@ public class MainForm {
 			}
 		});
 		
-		frame.setLayeredPane(work);
-		work.add(fonpanel, new Integer(1));
-		work.add(panel,  new Integer(2));
+		//frame.setLayeredPane(work);
+		//work.add(fonpanel, new Integer(1));
+		//work.add(panel,  new Integer(2));
 	}
 }
