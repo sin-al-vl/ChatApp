@@ -28,33 +28,29 @@ public class CallListener {
         this.localAddress = new InetSocketAddress(localIP, Constants.PORT);
     }
 
+    private String receiveRemoteNick(Connection connection) throws IOException{
+        Command c = connection.receive();
+        return c.toString().substring((Constants.ChatApp_VERSION + " user ").length());
+    }
+
     public Connection getConnection () throws IOException{
         ServerSocket serverSocket = new ServerSocket(Constants.PORT);  //I'm not sure it's right
         Socket socket = serverSocket.accept();
-        System.out.println("Accepted");
-
         Connection connection = new Connection(socket);
-        Scanner in = new Scanner(new BufferedInputStream(socket.getInputStream()));
 
-         new Thread(new Runnable() {
-             @Override
-             public void run() {
-                 remoteNick = "Untitled";
-
-                 if ((in.next() + " " + in.next()).equals(Constants.ChatApp_VERSION)) {
-                     in.next();
-                     remoteNick = in.nextLine();
-                 }
-             }
-         }).start();
-
-        if (isBusy) {
+        if (isBusy)
+        {
             connection.sendNickBusy(localNick);
+            remoteNick = receiveRemoteNick(connection);
             return null;
         }
-        else{
+        else
+        {
             isBusy = true;
             connection.sendNickHello(localNick);
+            remoteNick = receiveRemoteNick(connection);
+            Scanner in = new Scanner(System.in);
+            in.next();
             return connection;
         }
     }
@@ -93,7 +89,8 @@ public class CallListener {
 
     public static void main(String[] args) throws IOException{
         // Maybe this main for testing?
-       CallListener c = new CallListener("Lammer");
-       c.getConnection();
+        CallListener c = new CallListener("Lammer");
+        c.getConnection();
+        System.out.println(c.getRemoteNick());
     }
 }

@@ -8,9 +8,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.awt.GridLayout;
 import java.awt.GridBagLayout;
-import com.jgoodies.forms.layout.FormLayout;
+/*import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
+import com.jgoodies.forms.layout.RowSpec;*/
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -37,7 +37,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollBar;
-import org.eclipse.wb.swing.FocusTraversalOnArray;
+/*import org.eclipse.wb.swing.FocusTraversalOnArray;*/
 import java.awt.Component;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
