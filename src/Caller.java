@@ -101,7 +101,7 @@ public class Caller {
     }};
 
     public static void main(String[] args) throws IOException{
-        Caller c = new Caller("Rogdan", "127.0.0.1");
+        Caller c = new Caller("Lammer", "127.0.0.1");
         c.call();
     }
 }

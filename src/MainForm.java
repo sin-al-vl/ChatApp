@@ -49,6 +49,7 @@ public class MainForm {
 	private JTextField remlog;
 	private JTextField remadr;
 	private JTextField msg;
+	private CallListenerThread callListener;
 
 	/**
 	 * Launch the application.
@@ -83,7 +84,7 @@ public class MainForm {
 		frame.setBounds(100, 100, 470, 470);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		
+
 		JPanel panel = new JPanel();
 		panel.setName("panel");
 		panel.setBackground(new Color(255, 255, 255));
@@ -91,7 +92,7 @@ public class MainForm {
 		panel.setBounds(25, 25, 404, 382);
 		frame.getContentPane().add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setOpaque(false);
 		panel.add(panel_1, BorderLayout.NORTH);
@@ -101,14 +102,14 @@ public class MainForm {
 		gbl_panel_1.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel_1.rowWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
 		panel_1.setLayout(gbl_panel_1);
-		
+
 		JLabel lblNewLabel = new JLabel("local login");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel.gridx = 0;
 		gbc_lblNewLabel.gridy = 0;
 		panel_1.add(lblNewLabel, gbc_lblNewLabel);
-		
+
 		loclog = new JTextField();
 		GridBagConstraints gbc_loclog = new GridBagConstraints();
 		gbc_loclog.fill = GridBagConstraints.BOTH;
@@ -117,14 +118,14 @@ public class MainForm {
 		gbc_loclog.gridy = 0;
 		panel_1.add(loclog, gbc_loclog);
 		loclog.setColumns(10);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("remote login");
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
 		gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblNewLabel_1.gridx = 3;
 		gbc_lblNewLabel_1.gridy = 0;
 		panel_1.add(lblNewLabel_1, gbc_lblNewLabel_1);
-		
+
 		remlog = new JTextField();
 		GridBagConstraints gbc_remlog = new GridBagConstraints();
 		gbc_remlog.fill = GridBagConstraints.BOTH;
@@ -133,7 +134,7 @@ public class MainForm {
 		gbc_remlog.gridy = 0;
 		panel_1.add(remlog, gbc_remlog);
 		remlog.setColumns(10);
-		
+
 		JButton DisconBut = new JButton("Disconnect");
 		GridBagConstraints gbc_DisconBut = new GridBagConstraints();
 		gbc_DisconBut.fill = GridBagConstraints.BOTH;
@@ -141,7 +142,7 @@ public class MainForm {
 		gbc_DisconBut.gridx = 5;
 		gbc_DisconBut.gridy = 0;
 		panel_1.add(DisconBut, gbc_DisconBut);
-		
+
 		JButton ApplyBut = new JButton("Apply");
 		GridBagConstraints gbc_ApplyBut = new GridBagConstraints();
 		gbc_ApplyBut.fill = GridBagConstraints.BOTH;
@@ -149,14 +150,14 @@ public class MainForm {
 		gbc_ApplyBut.gridx = 0;
 		gbc_ApplyBut.gridy = 1;
 		panel_1.add(ApplyBut, gbc_ApplyBut);
-		
+
 		JLabel lblNewLabel_2 = new JLabel("remote addr");
 		GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
 		gbc_lblNewLabel_2.insets = new Insets(0, 0, 0, 5);
 		gbc_lblNewLabel_2.gridx = 3;
 		gbc_lblNewLabel_2.gridy = 1;
 		panel_1.add(lblNewLabel_2, gbc_lblNewLabel_2);
-		
+
 		remadr = new JTextField();
 		GridBagConstraints gbc_remadr = new GridBagConstraints();
 		gbc_remadr.insets = new Insets(0, 0, 0, 5);
@@ -165,14 +166,14 @@ public class MainForm {
 		gbc_remadr.gridy = 1;
 		panel_1.add(remadr, gbc_remadr);
 		remadr.setColumns(10);
-		
+
 		JButton ConBut = new JButton("Connect");
 		GridBagConstraints gbc_ConBut = new GridBagConstraints();
 		gbc_ConBut.fill = GridBagConstraints.BOTH;
 		gbc_ConBut.gridx = 5;
 		gbc_ConBut.gridy = 1;
 		panel_1.add(ConBut, gbc_ConBut);
-		
+
 		JPanel panel_2 = new JPanel();
 		panel_2.setOpaque(false);
 		panel.add(panel_2, BorderLayout.SOUTH);
@@ -182,7 +183,7 @@ public class MainForm {
 		gbl_panel_2.columnWeights = new double[]{1.0, 0.0, Double.MIN_VALUE};
 		gbl_panel_2.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		panel_2.setLayout(gbl_panel_2);
-		
+
 		msg = new JTextField();
 		GridBagConstraints gbc_msg = new GridBagConstraints();
 		gbc_msg.fill = GridBagConstraints.BOTH;
@@ -191,70 +192,70 @@ public class MainForm {
 		gbc_msg.gridy = 0;
 		panel_2.add(msg, gbc_msg);
 		msg.setColumns(10);
-		
+
 		JButton SendBut = new JButton("Send");
 		GridBagConstraints gbc_SendBut = new GridBagConstraints();
 		gbc_SendBut.fill = GridBagConstraints.BOTH;
 		gbc_SendBut.gridx = 1;
 		gbc_SendBut.gridy = 0;
 		panel_2.add(SendBut, gbc_SendBut);
-		
+
 		JPanel panel_3 = new JPanel();
 		panel_3.setOpaque(false);
 		panel_3.setBorder(new EmptyBorder(5, 0, 5, 0));
 		panel.add(panel_3, BorderLayout.CENTER);
 		panel_3.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		panel_3.add(scrollPane, BorderLayout.CENTER);
-		
+
 		JList list = new JList();
 		scrollPane.setViewportView(list);
-		
+
 		JPanel fonpanel = new JPanel();
 		fonpanel.setName("fonpanel");
 		fonpanel.setBackground(new Color(204, 255, 153));
 		fonpanel.setBounds(0, 0, 454, 432);
 		frame.getContentPane().add(fonpanel);
 		fonpanel.setLayout(new BorderLayout(0, 0));
-		
+
 		JLabel label = new JLabel("");
 		label.setIcon(new ImageIcon("src\\fon.png"));
 		fonpanel.add(label, BorderLayout.SOUTH);
-		
+
 		JLayeredPane work = new JLayeredPane();
 		work.setBounds(0, 0, 10, 10);
 		//frame.getContentPane().add(work);
-		
-		
+
+
 		frame.getContentPane().addComponentListener(new ComponentListener() {
 
 				@Override
 				public void componentResized(ComponentEvent e) {
 					fonpanel.setSize(frame.getContentPane().getWidth(), frame.getContentPane().getHeight());
 					panel.setSize(frame.getContentPane().getWidth()-50, frame.getContentPane().getHeight()-50);
-					
+
 				}
 
 				@Override
 				public void componentMoved(ComponentEvent e) {
 					// TODO Auto-generated method stub
-					
+
 				}
 
 				@Override
 				public void componentShown(ComponentEvent e) {
 					// TODO Auto-generated method stub
-					
+
 				}
 
 				@Override
 				public void componentHidden(ComponentEvent e) {
 					// TODO Auto-generated method stub
-					
+
 				}
 	        });
-		
+
 		frame.addWindowStateListener(new WindowStateListener(){
 
 			@Override
@@ -262,9 +263,9 @@ public class MainForm {
 				fonpanel.setSize(frame.getWidth()-16, frame.getHeight()-38);
 				panel.setSize(frame.getWidth()-66, frame.getHeight()-88);
 			}
-			
+
 		});
-		
+
 		DefaultListModel dlm = new DefaultListModel();
 		SendBut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -288,9 +289,9 @@ public class MainForm {
 				msg.requestFocus();
 			}
 		});
-		
+
 		msg.addKeyListener(new KeyListener(){
-			
+
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER){
 					SendBut.doClick();
@@ -300,18 +301,40 @@ public class MainForm {
 			@Override
 			public void keyReleased(KeyEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
+
 		//frame.setLayeredPane(work);
 		//work.add(fonpanel, new Integer(1));
 		//work.add(panel,  new Integer(2));
+
+		ApplyBut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (callListener == null)
+				    callListener = new CallListenerThread(new CallListener(loclog.getText()));
+				else {
+					callListener.setLocalNick(loclog.getText());
+				}
+			}
+		});
+
+
+	}
+
+	public boolean quest (){
+		Object[] options = {"Receive","Reject"};
+		JOptionPane.showOptionDialog(frame,"User ... with ip ... is trying to connect with you","Recive connection",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,options,options[0]);
+		return true;
 	}
 }

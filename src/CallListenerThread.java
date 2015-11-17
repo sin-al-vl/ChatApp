@@ -11,14 +11,19 @@ public class CallListenerThread extends Observable implements Runnable {
     private CallListener call;
     private volatile boolean isClose;
     private Caller.CallStatus callStatus;
+    private Thread t;
 
     public CallListenerThread(){
-        start();
+        t = new Thread(this);
+        isClose = false;
+        t.start();
     }
 
     public CallListenerThread(CallListener call){
         this.call = call;
-        start();
+        t = new Thread(this);
+        isClose = false;
+        t.start();
     }
 
     public SocketAddress getListenAddress(){
@@ -49,7 +54,7 @@ public class CallListenerThread extends Observable implements Runnable {
         call.setLocalNick(newNick);
     }
 
-    public void run (){
+    public void run(){
         while (!isClose){
             try {
                Connection c = call.getConnection();
@@ -62,14 +67,11 @@ public class CallListenerThread extends Observable implements Runnable {
                      callStatus = Caller.CallStatus.valueOf("REJECTED");  //Say observers about crashed connection?? I`m not sure
             }
 
+
             setChanged();
             notifyObservers();
-        }
-    }
 
-    public void start (){
-        isClose = false;
-        run();
+        }
     }
 
     public void stop(){

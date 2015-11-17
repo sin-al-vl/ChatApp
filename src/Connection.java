@@ -14,7 +14,6 @@ public class Connection  {
         this.socket = socet;
     }
 
-
     public void sendNickHello(String nick) throws IOException {
         socket.getOutputStream().write((Constants.ChatApp_VERSION + " user " + nick + "\n").getBytes(Constants.CHARSET_NAME));
         socket.getOutputStream().flush();
@@ -49,7 +48,6 @@ public class Connection  {
     public Command receive() throws IOException {
         Scanner in = new Scanner(new BufferedInputStream(socket.getInputStream()));
         String line = in.nextLine();
-
 
         if(line.contains(" ") && line.startsWith(Constants.ChatApp_VERSION)){
 

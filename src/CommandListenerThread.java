@@ -8,15 +8,18 @@ public class CommandListenerThread extends Observable implements Runnable {
     private Connection connection;
     private Command lastCommand;
     private volatile boolean isDisconnected;
+    private Thread t;
 
     public CommandListenerThread() {
         connection = null;
-        start();
+        t = new Thread(this);
+        t.start();
     }
 
     public CommandListenerThread(Connection connection) {
         this.connection = connection;
-        start();
+        t = new Thread(this);
+        t.start();
     }
 
     public Command getLastCommand(){
@@ -46,11 +49,6 @@ public class CommandListenerThread extends Observable implements Runnable {
                     lastCommand.toString().equals(Command.CommandType.REJECT.toString()))
                 stop();
         }
-    }
-
-    public void start(){
-        isDisconnected = false;
-        run();
     }
 
     public void stop(){

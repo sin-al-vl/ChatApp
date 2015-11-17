@@ -34,7 +34,7 @@ public class CallListener {
     }
 
     public Connection getConnection () throws IOException{
-        ServerSocket serverSocket = new ServerSocket(Constants.PORT);  //I'm not sure it's right
+        ServerSocket serverSocket = new ServerSocket(Constants.PORT);
         Socket socket = serverSocket.accept();
         Connection connection = new Connection(socket);
 
