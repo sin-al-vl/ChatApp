@@ -13,7 +13,6 @@ public class Command {
         return commandType.toString();
     }
 
-
     static enum CommandType{
         ACCEPT, DISCONNECT, MESSAGE, NICK, REJECT
     }

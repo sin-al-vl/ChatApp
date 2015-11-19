@@ -22,7 +22,6 @@ public class Caller {
     }
 
     public Caller (String localNick, String ip){
-
         this(localNick);
         remoteAddress = new InetSocketAddress(ip, Constants.PORT);
     }
@@ -37,6 +36,7 @@ public class Caller {
         Connection connection = new Connection(new Socket(remoteAddress.getAddress(), Constants.PORT));
         connection.sendNickHello(localNick);
         Command command = connection.receive();             //receive NickCommand
+        System.out.println("Command = " + command.toString());
 
         if(command.getClass().equals(NickCommand.class)){   //If receive exactly NickCommand
 
@@ -45,12 +45,18 @@ public class Caller {
             if(((NickCommand)command).isBusy()) {
                 status = CALL_STATUS_HASH_MAP.get(Constants.ChatApp_VERSION);
             } else {
-                command = connection.receive();             //if NOT busy then receive ACCEPT or REJECT
+                command = connection.receive();             //if NOT busy then receive OK or REJECT
                 status = CALL_STATUS_HASH_MAP.get(command.toString());
             }
 
-            if(status.equals(CallStatus.OK))                //Only if Connection is accepted then return it
+            if(status.equals(CallStatus.OK)) {                //Only if Connection is accepted then return it
+                System.out.println("Success connection");
+
+                CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
+                commandListenerThread.addObserver(MainForm.window);
+
                 return connection;
+            }
             else
                 return null;
         } else {
@@ -100,8 +106,10 @@ public class Caller {
         put(Command.CommandType.REJECT.toString(), CallStatus.REJECTED);
     }};
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException, InterruptedException{
         Caller c = new Caller("Lammer", "127.0.0.1");
-        c.call();
+        Connection connection = c.call();
+        connection.sendMessage("Suka blya");
+        connection.receive();
     }
 }

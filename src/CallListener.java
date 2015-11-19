@@ -4,6 +4,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.text.ParseException;
 import java.util.Scanner;
 
 /**
@@ -13,7 +14,8 @@ public class CallListener {
     private String localNick;
     private InetSocketAddress localAddress;
     private boolean isBusy;
-    private String remoteNick;
+    private String remoteNick, remoteAddress;
+    private ServerSocket serverSocket;
 
     public CallListener(){
         this("Untitled");
@@ -21,6 +23,11 @@ public class CallListener {
 
     public CallListener(String localNick){
         this.localNick = localNick;
+        try {
+            serverSocket = new ServerSocket(Constants.PORT);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     public CallListener(String localNick, String localIP){
@@ -34,13 +41,16 @@ public class CallListener {
     }
 
     public Connection getConnection () throws IOException{
-        ServerSocket serverSocket = new ServerSocket(Constants.PORT);
         Socket socket = serverSocket.accept();
+        remoteAddress = serverSocket.getInetAddress().getCanonicalHostName();
+        System.out.println("Accepted");
         Connection connection = new Connection(socket);
+        System.out.println("Connection OK");
 
         if (isBusy)
         {
             connection.sendNickBusy(localNick);
+            System.out.println("Local nick " + localNick);
             remoteNick = receiveRemoteNick(connection);
             return null;
         }
@@ -49,8 +59,6 @@ public class CallListener {
             isBusy = true;
             connection.sendNickHello(localNick);
             remoteNick = receiveRemoteNick(connection);
-            Scanner in = new Scanner(System.in);
-            in.next();
             return connection;
         }
     }
@@ -87,7 +95,11 @@ public class CallListener {
         return remoteNick;
     }
 
-    public static void main(String[] args) throws IOException{
+    public String getRemoteAddress(){
+        return remoteAddress;
+    }
+
+    public static void main(String[] args) throws IOException {
         // Maybe this main for testing?
         CallListener c = new CallListener("Lammer");
         c.getConnection();

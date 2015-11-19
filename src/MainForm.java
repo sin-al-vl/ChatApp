@@ -6,50 +6,47 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-import java.awt.GridLayout;
 import java.awt.GridBagLayout;
 /*import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;*/
-import javax.swing.JTextPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Insets;
-import java.awt.List;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.ContainerListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
+import java.io.IOException;
 import java.sql.Date;
 import java.awt.GridBagConstraints;
 import java.awt.Color;
-import javax.swing.border.LineBorder;
 import javax.swing.text.BadLocationException;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollBar;
 /*import org.eclipse.wb.swing.FocusTraversalOnArray;*/
-import java.awt.Component;
+import java.util.Observable;
+import java.util.Observer;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
-public class MainForm {
+public class MainForm implements Observer{
 
 	private JFrame frame;
 	private JTextField loclog;
 	private JTextField remlog;
 	private JTextField remadr;
 	private JTextField msg;
-	private CallListenerThread callListener;
+	private CallListenerThread callListenerThread;
+    public static MainForm window;
+	private DefaultListModel dlm;
+	private JList list;
+	private Connection connection;
 
 	/**
 	 * Launch the application.
@@ -58,7 +55,7 @@ public class MainForm {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainForm window = new MainForm();
+					window = new MainForm();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -209,7 +206,7 @@ public class MainForm {
 		JScrollPane scrollPane = new JScrollPane();
 		panel_3.add(scrollPane, BorderLayout.CENTER);
 
-		JList list = new JList();
+		list = new JList();
 		scrollPane.setViewportView(list);
 
 		JPanel fonpanel = new JPanel();
@@ -261,12 +258,12 @@ public class MainForm {
 			@Override
 			public void windowStateChanged(WindowEvent e) {
 				fonpanel.setSize(frame.getWidth()-16, frame.getHeight()-38);
-				panel.setSize(frame.getWidth()-66, frame.getHeight()-88);
+				panel.setSize(frame.getWidth()-66, frame.getHeight() - 88);
 			}
 
 		});
 
-		DefaultListModel dlm = new DefaultListModel();
+		dlm = new DefaultListModel();
 		SendBut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if ((loclog.getText().equals("")) || (remlog.getText().equals("")) || (remadr.getText().equals(""))){
@@ -284,6 +281,14 @@ public class MainForm {
 					long date = System.currentTimeMillis();
 					dlm.addElement("<html>" + name + " " + new Date(date).toLocaleString() + ":<br>" + msg.getText() + " </span></html>");
 					list.setModel(dlm);
+
+					try {
+						connection.sendMessage(msg.getText());
+						System.out.println("Sended");
+					} catch (IOException ex){
+						System.out.println("No internet connection");
+					}
+
 				}
 				msg.setText("");
 				msg.requestFocus();
@@ -318,23 +323,93 @@ public class MainForm {
 		ApplyBut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (callListener == null)
-				    callListener = new CallListenerThread(new CallListener(loclog.getText()));
+				if (callListenerThread == null) {
+                    System.out.println("Added obs");
+                    callListenerThread = new CallListenerThread(new CallListener(loclog.getText()));
+                    callListenerThread.addObserver(window);
+                }
 				else {
-					callListener.setLocalNick(loclog.getText());
+					callListenerThread.setLocalNick(loclog.getText());
 				}
 			}
 		});
 
+		ConBut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Caller caller = new Caller(loclog.getText() ,remadr.getText());
+					new Thread (new Runnable() {
+						@Override
+						public void run() {
+							try {
+								connection = caller.call();
 
+								if(caller.getStatus().toString().equals("OK"))
+									remlog.setText(caller.getRemoteNick());
+								else
+								 if (caller.getStatus().toString().equals("BUSY")){
+									 JOptionPane.showMessageDialog(frame, "User " + caller.getRemoteNick() + " is busy");
+								 }
+								else
+								{
+									JOptionPane.showMessageDialog(frame, "User " + caller.getRemoteNick() + " has declined your call.");
+									connection = null;
+								}
+
+							} catch (IOException ex) {                    //Show message that remote user is offline or wrong ip
+								JOptionPane.showMessageDialog(frame, "Connection error. User with ip does not exist or there is no Internet connection");
+								connection = null;
+							}
+						}
+					}).start();
+			}
+
+
+		});
 	}
 
-	public boolean quest (){
+	public boolean question (String nick, String remoteAddress){
 		Object[] options = {"Receive","Reject"};
-		JOptionPane.showOptionDialog(frame,"User ... with ip ... is trying to connect with you","Recive connection",
+		int dialogResult = JOptionPane.showOptionDialog(frame,"User "+ nick + " with ip " + remoteAddress +
+						" is trying to connect with you","Recive connection",
 				JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE,
 				null,options,options[0]);
-		return true;
+		if(dialogResult == JOptionPane.YES_OPTION) {
+			System.out.println("Receive");
+			remlog.setText(nick);
+			remadr.setText(remoteAddress);
+			return true; // Receive
+		}
+		System.out.println("Rejected");
+			return false; //Reject
+
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if(arg instanceof CallListener)
+		{
+			CallListener c = (CallListener) arg;
+			callListenerThread.suspend();
+			callListenerThread.setReceive(question(c.getRemoteNick(), c.getRemoteAddress()));
+			callListenerThread.resume();
+		}
+		else
+			if (arg instanceof Connection){
+				connection = (Connection) arg;
+				System.out.println("Output connection created");
+			}
+		else
+		{
+			System.out.println("Receive message");
+			System.out.println(arg.toString());
+			Command command = (Command) arg;
+
+			if (command instanceof MessageCommand) {
+				dlm.addElement("<html>" + remlog.getText() + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + arg.toString() + " </span></html>");
+				list.setModel(dlm);
+			}
+		}
 	}
 }
