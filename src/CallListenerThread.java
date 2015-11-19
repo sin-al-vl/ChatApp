@@ -8,11 +8,12 @@ import java.util.Observer;
  * Created by Rogdan on 08.11.2015.
  */
 public class CallListenerThread implements Runnable {
-    private CallListener call;
+    private CallListener callListener;
     private volatile boolean isClose;
     private Caller.CallStatus callStatus;
     private Thread t;
     private volatile boolean  isReceive, flag;
+    private Connection lastConnection;  //for accept and decline when busy
 
     private Observable myObservable = new Observable(){
         public void notifyObservers(Object arg) {
@@ -27,19 +28,19 @@ public class CallListenerThread implements Runnable {
         t.start();
     }
 
-    public CallListenerThread(CallListener call){
-        this.call = call;
+    public CallListenerThread(CallListener callListener){
+        this.callListener = callListener;
         t = new Thread(this);
         isClose = false;
         t.start();
     }
 
     public SocketAddress getListenAddress(){
-        return call.getListenAddress();
+        return callListener.getListenAddress();
     }
 
     public String getLocalNick (){
-        return call.getLocalNick();
+        return callListener.getLocalNick();
     }
 
     public SocketAddress getRemoteAddress(){
@@ -47,47 +48,55 @@ public class CallListenerThread implements Runnable {
     }
 
     public boolean isBusy (){
-        return call.isBusy();
+        return callListener.isBusy();
     }
 
     public void setBusy (boolean isBusy){
-        call.setBusy(isBusy);
+        callListener.setBusy(isBusy);
     }
 
     public void setListenAddress(InetSocketAddress newAddress){
-        call.setListenAddress(newAddress);
+        callListener.setListenAddress(newAddress);
     }
 
     public void setLocalNick (String newNick){
-        call.setLocalNick(newNick);
+        callListener.setLocalNick(newNick);
     }
 
     public void run() {
         while (!isClose) {
             try {
                 System.out.println("Before");
-                Connection connection = call.getConnection();
+                Connection connection = callListener.getConnection();
                 System.out.println("Get");
-                myObservable.notifyObservers(call);
+                myObservable.notifyObservers(callListener);
                 waitAnswer();
                 System.out.println("continued");
 
                 if (!isReceive) {
-                    call.setBusy(false);
                     System.out.println("False");
-                    if (connection == null) {
+                    if (callListener.isBusy()) {
+                        connection.sendNickBusy(callListener.getLocalNick());
                         callStatus = Caller.CallStatus.BUSY;
                     }
                     else {
-                        callStatus = Caller.CallStatus.REJECTED;  //Sey observers: you are busy
+                        connection.sendNickHello(callListener.getLocalNick());
                         connection.reject();
+                        callStatus = Caller.CallStatus.REJECTED;
                     }
                 }
                 else{
+                    connection.sendNickHello(callListener.getLocalNick());
+                    if (callListener.isBusy())
+                        lastConnection.disconnect();
+                    else
+                        callListener.setBusy(true);
+
                     System.out.println("OK");
                     callStatus = Caller.CallStatus.OK;        //Success connection
 
                     connection.accept();
+                    lastConnection = connection;
                     myObservable.notifyObservers(connection);
 
                     CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
@@ -132,6 +141,6 @@ public class CallListenerThread implements Runnable {
     }
 
     public String getRemoteNick (){
-        return call.getRemoteNick();
+        return callListener.getRemoteNick();
     }
 }

@@ -58,8 +58,7 @@ public class CommandListenerThread implements Runnable {
                     lastCommand.toString().equals(Command.CommandType.REJECT.toString()))
                 stop();
 
-            else if (lastCommand instanceof MessageCommand)
-                 myObservable.notifyObservers(lastCommand);
+             myObservable.notifyObservers(lastCommand);
         }
     }
 

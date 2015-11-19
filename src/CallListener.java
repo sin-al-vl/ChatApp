@@ -13,7 +13,7 @@ import java.util.Scanner;
 public class CallListener {
     private String localNick;
     private InetSocketAddress localAddress;
-    private boolean isBusy;
+    private volatile boolean isBusy;
     private String remoteNick, remoteAddress;
     private ServerSocket serverSocket;
 
@@ -46,21 +46,9 @@ public class CallListener {
         System.out.println("Accepted");
         Connection connection = new Connection(socket);
         System.out.println("Connection OK");
+        remoteNick = receiveRemoteNick(connection);
 
-        if (isBusy)
-        {
-            connection.sendNickBusy(localNick);
-            System.out.println("Local nick " + localNick);
-            remoteNick = receiveRemoteNick(connection);
-            return null;
-        }
-        else
-        {
-            isBusy = true;
-            connection.sendNickHello(localNick);
-            remoteNick = receiveRemoteNick(connection);
-            return connection;
-        }
+        return connection;
     }
 
     public String getLocalNick(){

@@ -366,6 +366,22 @@ public class MainForm implements Observer{
 
 
 		});
+
+		DisconBut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				remlog.setText("");
+				try {
+					connection.disconnect();
+					callListenerThread.setBusy(false);
+				} catch (IOException ex){
+					// Already disconnect
+				}
+				catch (NullPointerException ex){
+					System.out.println("Already disconnect");                //Already disconnect
+				}
+			}
+		});
 	}
 
 	public boolean question (String nick, String remoteAddress){
@@ -409,6 +425,15 @@ public class MainForm implements Observer{
 			if (command instanceof MessageCommand) {
 				dlm.addElement("<html>" + remlog.getText() + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + arg.toString() + " </span></html>");
 				list.setModel(dlm);
+			}
+			else {
+				Command check = new Command(Command.CommandType.DISCONNECT);
+				if (command.toString().equals("DISCONNECT") || command.toString().equals("REJECTED")){
+					JOptionPane.showMessageDialog(frame, "User " + remlog.getText() + " was disconnected");
+					callListenerThread.setBusy(false);
+					remlog.setText("");
+					remadr.setText("");
+				}
 			}
 		}
 	}
