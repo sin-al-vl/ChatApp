@@ -37,15 +37,13 @@ public class CallListener {
 
     private String receiveRemoteNick(Connection connection) throws IOException{
         Command c = connection.receive();
-        return c.toString().substring((Constants.ChatApp_VERSION + " user ").length());
+        return c.toString().substring((Constants.START_NICK_POSITION));
     }
 
     public Connection getConnection () throws IOException{
         Socket socket = serverSocket.accept();
         remoteAddress = serverSocket.getInetAddress().getCanonicalHostName();
-        System.out.println("Accepted");
         Connection connection = new Connection(socket);
-        System.out.println("Connection OK");
         remoteNick = receiveRemoteNick(connection);
 
         return connection;

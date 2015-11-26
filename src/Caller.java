@@ -11,14 +11,10 @@ public class Caller {
     private String localNick;
     private InetSocketAddress remoteAddress;
     private String remoteNick;
-    private CallStatus status;
+    private CallStatus callStatus;
 
     public Caller (String localNick){
         this.localNick = localNick;
-    }
-
-    public Caller(){
-        this("Untitled");                       // How to create socket in this constructor and in the previous?
     }
 
     public Caller (String localNick, String ip){
@@ -27,42 +23,70 @@ public class Caller {
     }
 
     public Caller (String localNick, InetSocketAddress remoteAddress){
-
         this(localNick);
         this.remoteAddress = remoteAddress;
     }
 
-    public Connection call() throws IOException{            //supposedly method must be called in constructors
-        Connection connection = new Connection(new Socket(remoteAddress.getAddress(), Constants.PORT));
-        connection.sendNickHello(localNick);
-        Command command = connection.receive();             //receive NickCommand
-        System.out.println("Command = " + command.toString());
+    public Connection call() {
+        Connection connection = null;
 
-        if(command.getClass().equals(NickCommand.class)){   //If receive exactly NickCommand
-
-            remoteNick = ((NickCommand)command).getNick();
-
-            if(((NickCommand)command).isBusy()) {
-                status = CALL_STATUS_HASH_MAP.get(Constants.ChatApp_VERSION);
-            } else {
-                command = connection.receive();             //if NOT busy then receive OK or REJECT
-                status = CALL_STATUS_HASH_MAP.get(command.toString());
-            }
-
-            if(status.equals(CallStatus.OK)) {                //Only if Connection is accepted then return it
-                System.out.println("Success connection");
-
-                CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
-                commandListenerThread.addObserver(MainForm.window);
-
-                return connection;
-            }
-            else
-                return null;
-        } else {
-            status = CallStatus.NOT_ACCESSIBLE;             //or CallStatus.NO_SERVICE ???
-            return null;
+        try {
+            connection = new Connection(new Socket(remoteAddress.getAddress(), Constants.PORT));
+            connection.sendNickHello(localNick);
+            callStatus = receiveCallStatus(connection);
+        } catch (IOException ex) {
+            callStatus = CallStatus.NOT_ACCESSIBLE;
         }
+
+        if (callStatus.toString().equals("OK")) {
+            runCommandListenerThreadAndAddObserver(connection);  //set status "busy"
+            return connection;
+        }
+
+       return null;
+    }
+
+    private CallStatus receiveCallStatus(Connection connection){
+        try {
+            Command lastCommand = connection.receive();
+
+            if (isNickCommand(lastCommand)) {
+               NickCommand nickCommand = (NickCommand) lastCommand;
+
+                if (nickCommand.isBusy())
+                    return CallStatus.BUSY;
+
+                lastCommand = connection.receive();
+
+                if (isAccept(lastCommand))
+                    return CallStatus.OK;
+
+                return CallStatus.REJECTED;
+            }
+
+            return CallStatus.NO_SERVICE;
+
+        } catch (IOException ex) {
+            return CallStatus.NOT_ACCESSIBLE;
+        }
+    }
+
+    private boolean isNickCommand(Command lastCommand) {
+        if (lastCommand instanceof NickCommand) {
+            setRemoteNick(((NickCommand) lastCommand).getNick());
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isAccept (Command lastCommand) {
+        return lastCommand.toString().equals("ACCEPT");
+    }
+
+    private void runCommandListenerThreadAndAddObserver(Connection connection){
+        CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
+        commandListenerThread.addObserver(MainForm.window);
     }
 
     public void setLocalNick(String localNick) {
@@ -73,8 +97,12 @@ public class Caller {
         this.remoteAddress = remoteAddress;
     }
 
-    public CallStatus getStatus() {
-        return status;
+    public void setRemoteNick(String remoteNick){
+        this.remoteNick = remoteNick;
+    }
+
+    public CallStatus getCallStatus() {
+        return callStatus;
     }
 
     public String getRemoteNick() {
@@ -89,27 +117,8 @@ public class Caller {
         return localNick;
     }
 
-    public String toString(){
-        return String.valueOf(status);                      //not sure what exactly this method returns
-    }
-
-    static enum CallStatus {
+    public static enum CallStatus {
         BUSY, NO_SERVICE, NOT_ACCESSIBLE, OK, REJECTED
     }
 
-    static final int port = 28411;
-    static final HashMap<String, CallStatus> CALL_STATUS_HASH_MAP = new HashMap<String, CallStatus>(){{
-        put(Constants.ChatApp_VERSION, CallStatus.BUSY);
-//        put( , CallStatus.NO_SERVICE);
-//        put( , CallStatus.NOT_ACCESSIBLE);
-        put(Command.CommandType.ACCEPT.toString(), CallStatus.OK);
-        put(Command.CommandType.REJECT.toString(), CallStatus.REJECTED);
-    }};
-
-    public static void main(String[] args) throws IOException, InterruptedException{
-        Caller c = new Caller("Lammer", "127.0.0.1");
-        Connection connection = c.call();
-        connection.sendMessage("Suka blya");
-        connection.receive();
-    }
 }

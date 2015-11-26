@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.awt.GridBagConstraints;
 import java.awt.Color;
-import javax.swing.text.BadLocationException;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -36,14 +35,15 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 public class MainForm implements Observer{
-
-	private JFrame frame;
-	private JTextField loclog;
+	public static MainForm window;
+	private JFrame mainFrame;
+	private JTextField localLogin;
 	private JTextField remlog;
-	private JTextField remadr;
+	private JTextField remoteAddress;
 	private JTextField msg;
 	private CallListenerThread callListenerThread;
-    public static MainForm window;
+	private Caller caller;
+
 	private DefaultListModel dlm;
 	private JList list;
 	private Connection connection;
@@ -56,7 +56,7 @@ public class MainForm implements Observer{
 			public void run() {
 				try {
 					window = new MainForm();
-					window.frame.setVisible(true);
+					window.mainFrame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -72,22 +72,22 @@ public class MainForm implements Observer{
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Initialize the contents of the mainFrame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.getContentPane().setMinimumSize(new Dimension(454, 432));
-		frame.setMinimumSize(new Dimension(470, 470));
-		frame.setBounds(100, 100, 470, 470);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		mainFrame = new JFrame();
+		mainFrame.getContentPane().setMinimumSize(new Dimension(454, 432));
+		mainFrame.setMinimumSize(new Dimension(470, 470));
+		mainFrame.setBounds(100, 100, 470, 470);
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.getContentPane().setLayout(null);
 
 		JPanel panel = new JPanel();
-		panel.setName("panel");
+		panel.setName("Panel");
 		panel.setBackground(new Color(255, 255, 255));
 		panel.setOpaque(false);
 		panel.setBounds(25, 25, 404, 382);
-		frame.getContentPane().add(panel);
+		mainFrame.getContentPane().add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 
 		JPanel panel_1 = new JPanel();
@@ -107,14 +107,14 @@ public class MainForm implements Observer{
 		gbc_lblNewLabel.gridy = 0;
 		panel_1.add(lblNewLabel, gbc_lblNewLabel);
 
-		loclog = new JTextField();
+		localLogin = new JTextField();
 		GridBagConstraints gbc_loclog = new GridBagConstraints();
 		gbc_loclog.fill = GridBagConstraints.BOTH;
 		gbc_loclog.insets = new Insets(0, 0, 5, 5);
 		gbc_loclog.gridx = 1;
 		gbc_loclog.gridy = 0;
-		panel_1.add(loclog, gbc_loclog);
-		loclog.setColumns(10);
+		panel_1.add(localLogin, gbc_loclog);
+		localLogin.setColumns(10);
 
 		JLabel lblNewLabel_1 = new JLabel("remote login");
 		GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
@@ -155,14 +155,14 @@ public class MainForm implements Observer{
 		gbc_lblNewLabel_2.gridy = 1;
 		panel_1.add(lblNewLabel_2, gbc_lblNewLabel_2);
 
-		remadr = new JTextField();
+		remoteAddress = new JTextField();
 		GridBagConstraints gbc_remadr = new GridBagConstraints();
 		gbc_remadr.insets = new Insets(0, 0, 0, 5);
 		gbc_remadr.fill = GridBagConstraints.BOTH;
 		gbc_remadr.gridx = 4;
 		gbc_remadr.gridy = 1;
-		panel_1.add(remadr, gbc_remadr);
-		remadr.setColumns(10);
+		panel_1.add(remoteAddress, gbc_remadr);
+		remoteAddress.setColumns(10);
 
 		JButton ConBut = new JButton("Connect");
 		GridBagConstraints gbc_ConBut = new GridBagConstraints();
@@ -213,7 +213,7 @@ public class MainForm implements Observer{
 		fonpanel.setName("fonpanel");
 		fonpanel.setBackground(new Color(204, 255, 153));
 		fonpanel.setBounds(0, 0, 454, 432);
-		frame.getContentPane().add(fonpanel);
+		mainFrame.getContentPane().add(fonpanel);
 		fonpanel.setLayout(new BorderLayout(0, 0));
 
 		JLabel label = new JLabel("");
@@ -222,15 +222,14 @@ public class MainForm implements Observer{
 
 		JLayeredPane work = new JLayeredPane();
 		work.setBounds(0, 0, 10, 10);
-		//frame.getContentPane().add(work);
+		//mainFrame.getContentPane().add(work);
 
-
-		frame.getContentPane().addComponentListener(new ComponentListener() {
+		mainFrame.getContentPane().addComponentListener(new ComponentListener() {
 
 				@Override
 				public void componentResized(ComponentEvent e) {
-					fonpanel.setSize(frame.getContentPane().getWidth(), frame.getContentPane().getHeight());
-					panel.setSize(frame.getContentPane().getWidth()-50, frame.getContentPane().getHeight()-50);
+					fonpanel.setSize(mainFrame.getContentPane().getWidth(), mainFrame.getContentPane().getHeight());
+					panel.setSize(mainFrame.getContentPane().getWidth()-50, mainFrame.getContentPane().getHeight()-50);
 
 				}
 
@@ -253,12 +252,12 @@ public class MainForm implements Observer{
 				}
 	        });
 
-		frame.addWindowStateListener(new WindowStateListener(){
+		mainFrame.addWindowStateListener(new WindowStateListener() {
 
 			@Override
 			public void windowStateChanged(WindowEvent e) {
-				fonpanel.setSize(frame.getWidth()-16, frame.getHeight()-38);
-				panel.setSize(frame.getWidth()-66, frame.getHeight() - 88);
+				fonpanel.setSize(mainFrame.getWidth() - 16, mainFrame.getHeight() - 38);
+				panel.setSize(mainFrame.getWidth() - 66, mainFrame.getHeight() - 88);
 			}
 
 		});
@@ -266,26 +265,15 @@ public class MainForm implements Observer{
 		dlm = new DefaultListModel();
 		SendBut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if ((loclog.getText().equals("")) || (remlog.getText().equals("")) || (remadr.getText().equals(""))){
-					JOptionPane.showMessageDialog(frame, "Not enough data for sending the message");
-				}
+				if (connection == null)
+					JOptionPane.showMessageDialog(mainFrame, "No connection");
 				else {
-					String name = new String();
-					if (loclog.getText().length()>10){
-						try {
-							name = loclog.getText(0, 10);
-						} catch (BadLocationException ignore) {}
-						name = name + "...";
-					}
-					else name = loclog.getText();
-					long date = System.currentTimeMillis();
-					dlm.addElement("<html>" + name + " " + new Date(date).toLocaleString() + ":<br>" + msg.getText() + " </span></html>");
-					list.setModel(dlm);
+					printNickAndMessage(localLogin.getText(), msg.getText());
 
 					try {
 						connection.sendMessage(msg.getText());
-						System.out.println("Sended");
-					} catch (IOException ex){
+						System.out.println("Sanded");
+					} catch ( IOException | NullPointerException ex){
 						System.out.println("No internet connection");
 					}
 
@@ -316,7 +304,7 @@ public class MainForm implements Observer{
 			}
 		});
 
-		//frame.setLayeredPane(work);
+		//mainFrame.setLayeredPane(work);
 		//work.add(fonpanel, new Integer(1));
 		//work.add(panel,  new Integer(2));
 
@@ -325,11 +313,11 @@ public class MainForm implements Observer{
 			public void actionPerformed(ActionEvent e) {
 				if (callListenerThread == null) {
                     System.out.println("Added obs");
-                    callListenerThread = new CallListenerThread(new CallListener(loclog.getText()));
+                    callListenerThread = new CallListenerThread(new CallListener(localLogin.getText()));
                     callListenerThread.addObserver(window);
                 }
 				else {
-					callListenerThread.setLocalNick(loclog.getText());
+					callListenerThread.setLocalNick(localLogin.getText());
 				}
 			}
 		});
@@ -337,56 +325,58 @@ public class MainForm implements Observer{
 		ConBut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Caller caller = new Caller(loclog.getText() ,remadr.getText());
-					new Thread (new Runnable() {
+				if (!remoteAddress.getText().equals("")) {
+					caller = new Caller(localLogin.getText(), remoteAddress.getText());
+					new Thread(new Runnable() {
 						@Override
 						public void run() {
 							try {
 								connection = caller.call();
 
-								if(caller.getStatus().toString().equals("OK"))
+								if (connection == null){
+									JOptionPane.showMessageDialog(mainFrame, "User not exist");
+								}
+								else
+								if (caller.getCallStatus().toString().equals("OK")) {
 									remlog.setText(caller.getRemoteNick());
-								else
-								 if (caller.getStatus().toString().equals("BUSY")){
-									 JOptionPane.showMessageDialog(frame, "User " + caller.getRemoteNick() + " is busy");
-								 }
-								else
-								{
-									JOptionPane.showMessageDialog(frame, "User " + caller.getRemoteNick() + " has declined your call.");
+									notificationAboutSuccessConnection();
+								}
+								else if (caller.getCallStatus().toString().equals("BUSY")) {
+									JOptionPane.showMessageDialog(mainFrame, "User " + caller.getRemoteNick() + " is busy");
+								} else {
+									JOptionPane.showMessageDialog(mainFrame, "User " + caller.getRemoteNick() + " has declined your call.");
 									connection = null;
 								}
 
-							} catch (IOException ex) {                    //Show message that remote user is offline or wrong ip
-								JOptionPane.showMessageDialog(frame, "Connection error. User with ip does not exist or there is no Internet connection");
+							} catch (NullPointerException ex) {                    //Show message that remote user is offline or wrong ip
+								JOptionPane.showMessageDialog(mainFrame, "User with ip is offline or there is no Internet connection");
 								connection = null;
 							}
 						}
 					}).start();
+				}
+				else
+					JOptionPane.showMessageDialog(mainFrame, "Not enough actual parametrise");
 			}
+	    });
 
-
-		});
 
 		DisconBut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				remlog.setText("");
-				try {
-					connection.disconnect();
-					callListenerThread.setBusy(false);
-				} catch (IOException ex){
-					// Already disconnect
-				}
-				catch (NullPointerException ex){
-					System.out.println("Already disconnect");                //Already disconnect
-				}
+				if (connection != null)
+					try {
+						connection.disconnect();
+					} catch (IOException ignored){
+					}
+				disconnect();
 			}
 		});
 	}
 
-	public boolean question (String nick, String remoteAddress){
+	public boolean acceptOrRejectMessage(String nick, String remoteAddress){
 		Object[] options = {"Receive","Reject"};
-		int dialogResult = JOptionPane.showOptionDialog(frame,"User "+ nick + " with ip " + remoteAddress +
+		int dialogResult = JOptionPane.showOptionDialog(mainFrame,"User "+ nick + " with ip " + remoteAddress +
 						" is trying to connect with you","Recive connection",
 				JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE,
@@ -394,7 +384,7 @@ public class MainForm implements Observer{
 		if(dialogResult == JOptionPane.YES_OPTION) {
 			System.out.println("Receive");
 			remlog.setText(nick);
-			remadr.setText(remoteAddress);
+			this.remoteAddress.setText(remoteAddress);
 			return true; // Receive
 		}
 		System.out.println("Rejected");
@@ -402,38 +392,59 @@ public class MainForm implements Observer{
 
 	}
 
-	@Override
-	public void update(Observable o, Object arg) {
-		if(arg instanceof CallListener)
-		{
-			CallListener c = (CallListener) arg;
-			callListenerThread.suspend();
-			callListenerThread.setReceive(question(c.getRemoteNick(), c.getRemoteAddress()));
-			callListenerThread.resume();
-		}
-		else
-			if (arg instanceof Connection){
-				connection = (Connection) arg;
-				System.out.println("Output connection created");
-			}
-		else
-		{
-			System.out.println("Receive message");
-			System.out.println(arg.toString());
-			Command command = (Command) arg;
+	public void disconnect(){
+		if (callListenerThread != null)
+			callListenerThread.setBusy(false);
 
-			if (command instanceof MessageCommand) {
-				dlm.addElement("<html>" + remlog.getText() + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + arg.toString() + " </span></html>");
-				list.setModel(dlm);
-			}
-			else {
-				Command check = new Command(Command.CommandType.DISCONNECT);
-				if (command.toString().equals("DISCONNECT") || command.toString().equals("REJECTED")){
-					JOptionPane.showMessageDialog(frame, "User " + remlog.getText() + " was disconnected");
-					callListenerThread.setBusy(false);
-					remlog.setText("");
-					remadr.setText("");
-				}
+		remlog.setText("");
+		remoteAddress.setText("");
+		connection = null;
+		caller = null;
+	}
+
+	public void getInsideCall(CallListener c){
+		callListenerThread.suspend();
+		boolean isReceiveCall = acceptOrRejectMessage(c.getRemoteNick(), c.getRemoteAddress());
+		callListenerThread.setReceive(isReceiveCall);
+		callListenerThread.resume();
+	}
+
+	public void setConnection(Connection connection){
+		this.connection = connection;
+	}
+
+	public void printNickAndMessage(String nick, String message){
+		dlm.addElement("<html>" + nick + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + message + " </span></html>");
+		list.setModel(dlm);
+	}
+
+	public void showDisconnectMessage(){
+		JOptionPane.showMessageDialog(mainFrame, "User " + remlog.getText() + " was disconnected");
+	}
+
+	public void notificationAboutSuccessConnection(){
+		JOptionPane.showMessageDialog(mainFrame, "User " + remlog.getText() + " accept your call");
+	}
+
+	@Override
+	public void update(Observable who, Object updateInfo)
+	{
+		if (updateInfo instanceof CallListener)
+			getInsideCall((CallListener) updateInfo);
+
+		else if (updateInfo instanceof Connection)
+			setConnection((Connection) updateInfo);
+
+		else if (updateInfo instanceof Command)
+		{
+			Command updateCommand = (Command) updateInfo;
+
+			if (updateCommand instanceof MessageCommand)
+				printNickAndMessage(remlog.getText(), updateInfo.toString());
+			else if (updateCommand.toString().equals("DISCONNECT") || updateCommand.toString().equals("REJECT"))
+			{
+				showDisconnectMessage();
+				disconnect();
 			}
 		}
 	}

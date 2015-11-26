@@ -10,10 +10,10 @@ import java.util.Observer;
 public class CallListenerThread implements Runnable {
     private CallListener callListener;
     private volatile boolean isClose;
-    private Caller.CallStatus callStatus;
+    private Caller.CallStatus statusOfLastConnection;
     private Thread t;
-    private volatile boolean  isReceive, flag;
-    private Connection lastConnection;  //for accept and decline when busy
+    private volatile boolean isReceive, flag;
+    private Connection lastConnection = null;  //for accept and decline when busy
 
     private Observable myObservable = new Observable(){
         public void notifyObservers(Object arg) {
@@ -51,11 +51,11 @@ public class CallListenerThread implements Runnable {
         return callListener.isBusy();
     }
 
-    public void setBusy (boolean isBusy){
+    public synchronized void setBusy(boolean isBusy){
         callListener.setBusy(isBusy);
     }
 
-    public void setListenAddress(InetSocketAddress newAddress){
+    public void setListenAddress(InetSocketAddress newAddress) {
         callListener.setListenAddress(newAddress);
     }
 
@@ -64,49 +64,66 @@ public class CallListenerThread implements Runnable {
     }
 
     public void run() {
-        while (!isClose) {
+        while(!isClose){
             try {
-                System.out.println("Before");
                 Connection connection = callListener.getConnection();
-                System.out.println("Get");
                 myObservable.notifyObservers(callListener);
                 waitAnswer();
-                System.out.println("continued");
 
-                if (!isReceive) {
-                    System.out.println("False");
-                    if (callListener.isBusy()) {
-                        connection.sendNickBusy(callListener.getLocalNick());
-                        callStatus = Caller.CallStatus.BUSY;
-                    }
-                    else {
-                        connection.sendNickHello(callListener.getLocalNick());
-                        connection.reject();
-                        callStatus = Caller.CallStatus.REJECTED;
-                    }
-                }
-                else{
-                    connection.sendNickHello(callListener.getLocalNick());
-                    if (callListener.isBusy())
-                        lastConnection.disconnect();
-                    else
-                        callListener.setBusy(true);
-
-                    System.out.println("OK");
-                    callStatus = Caller.CallStatus.OK;        //Success connection
-
-                    connection.accept();
-                    lastConnection = connection;
-                    myObservable.notifyObservers(connection);
-
-                    CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
-                    commandListenerThread.addObserver(MainForm.window);
-                }
-
-            } catch (IOException e) {
-                callStatus = Caller.CallStatus.NOT_ACCESSIBLE;  //Say observers about crashed connection?? I`m not sure
+                if (!isReceive)
+                    sendBusyOrRejected(connection);
+                else
+                    acceptNewConnectionAndDisconnectPrev(connection);
+            }
+            catch (IOException e){
+                statusOfLastConnection = Caller.CallStatus.NOT_ACCESSIBLE;
+                e.printStackTrace();
             }
         }
+    }
+
+    private void sendBusyOrRejected(Connection connection) throws IOException{
+        if (callListener.isBusy()){
+            connection.sendNickBusy(getLocalNick());
+            statusOfLastConnection = Caller.CallStatus.BUSY;
+        }
+        else {
+            connection.sendNickHello(getLocalNick());
+            connection.reject();
+            statusOfLastConnection = Caller.CallStatus.REJECTED;
+        }
+    }
+
+    private void disconnectLastConnection() {
+        if (callListener.isBusy())
+            try {
+                lastConnection.disconnect();
+            } catch (IOException | NullPointerException ex) {
+                ex.printStackTrace();
+            }
+    }
+
+    private void acceptNewConnectionAndDisconnectPrev(Connection connection) throws IOException{
+        disconnectLastConnection();
+        acceptNewConnection(connection);
+    }
+
+    private void acceptNewConnection(Connection connection) throws IOException{
+        connection.sendNickHello(getLocalNick());
+        setBusy(true);
+
+        statusOfLastConnection = Caller.CallStatus.OK;
+        connection.accept();
+
+        lastConnection = connection;
+        myObservable.notifyObservers(connection);
+
+        runCommandListener(connection);
+    }
+
+    private void runCommandListener(Connection connection){
+        CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
+        commandListenerThread.addObserver(MainForm.window);
     }
 
     public void stop(){

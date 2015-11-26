@@ -7,7 +7,7 @@ import java.util.Observer;
  * Created by Александр on 07.11.2015.
  */
 public class CommandListenerThread implements Runnable {
-    private Connection connection;
+    private volatile Connection connection;
     private Command lastCommand;
     private volatile boolean isDisconnected;
     private Thread t;
@@ -31,42 +31,32 @@ public class CommandListenerThread implements Runnable {
         t.start();
     }
 
-    public Command getLastCommand(){
-        return lastCommand;
-    }
-
-    public boolean isDisconnected(){
-        return isDisconnected;
-    }
-
     @Override
     public void run() {
-        System.out.println("Run command listener");
+        System.out.println("Start receiving");
         while (!isDisconnected){
             try {
                 lastCommand = connection.receive();
-            } catch (IOException e) {
-                    System.out.println("Command listener Thread stopped");
-                    lastCommand = new Command(Command.CommandType.REJECT);
-            }
-            catch (NoSuchElementException e){
-                System.out.println("Command listener Thread stopped");
-                lastCommand = new Command(Command.CommandType.DISCONNECT);
+            } catch (IOException | NoSuchElementException e) {
+                    lastCommand = new Command(Command.CommandType.DISCONNECT);
             }
 
-            if(lastCommand.toString().equals(Command.CommandType.DISCONNECT.toString()) ||
-                    lastCommand.toString().equals(Command.CommandType.REJECT.toString()))
-                stop();
+            if(lastCommand.toString().equals("DISCONNECT") || lastCommand.toString().equals("REJECT"))
+                stopReceiving();
 
-             myObservable.notifyObservers(lastCommand);
+            if (connection.isActual())                     //How kill all threads with this connection???
+              myObservable.notifyObservers(lastCommand);
+            else
+                stopReceiving();
         }
+        System.out.println("Stop receiving");
     }
 
     public void addObserver(Observer observer){
         myObservable.addObserver(observer);
     }
 
-    public void stop(){
+    public void stopReceiving(){
         isDisconnected = true;
     }
 }

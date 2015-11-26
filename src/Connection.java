@@ -9,9 +9,11 @@ import java.util.Scanner;
  */
 public class Connection  {
     private Socket socket;
+    private volatile boolean isActual;
 
     public Connection(Socket socet) {
         this.socket = socet;
+        isActual = true;
     }
 
     public void sendNickHello(String nick) throws IOException {
@@ -43,6 +45,12 @@ public class Connection  {
     public void disconnect() throws IOException {
         socket.getOutputStream().write("Disconnect\n".getBytes(Constants.CHARSET_NAME));
         socket.getOutputStream().flush();
+
+        isActual = false;
+    }
+
+    public boolean isActual(){
+        return isActual;
     }
 
     public Command receive() throws IOException {
