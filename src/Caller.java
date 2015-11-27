@@ -2,8 +2,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Date;
 import java.util.HashMap;
-
 /**
  * Created by Rogdan on 02.11.2015.
  */
@@ -32,9 +32,11 @@ public class Caller {
 
         try {
             connection = new Connection(new Socket(remoteAddress.getAddress(), Constants.PORT));
+
             connection.sendNickHello(localNick);
+
             callStatus = receiveCallStatus(connection);
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             callStatus = CallStatus.NOT_ACCESSIBLE;
         }
 

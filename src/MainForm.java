@@ -44,7 +44,7 @@ public class MainForm implements Observer{
 	private CallListenerThread callListenerThread;
 	private Caller caller;
 
-	private DefaultListModel dlm;
+	private DefaultListModel messageShowing;
 	private JList list;
 	private Connection connection;
 
@@ -262,7 +262,7 @@ public class MainForm implements Observer{
 
 		});
 
-		dlm = new DefaultListModel();
+		messageShowing = new DefaultListModel();
 		SendBut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (connection == null)
@@ -322,45 +322,6 @@ public class MainForm implements Observer{
 			}
 		});
 
-		ConBut.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (!remoteAddress.getText().equals("")) {
-					caller = new Caller(localLogin.getText(), remoteAddress.getText());
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								connection = caller.call();
-
-								if (connection == null){
-									JOptionPane.showMessageDialog(mainFrame, "User not exist");
-								}
-								else
-								if (caller.getCallStatus().toString().equals("OK")) {
-									remlog.setText(caller.getRemoteNick());
-									notificationAboutSuccessConnection();
-								}
-								else if (caller.getCallStatus().toString().equals("BUSY")) {
-									JOptionPane.showMessageDialog(mainFrame, "User " + caller.getRemoteNick() + " is busy");
-								} else {
-									JOptionPane.showMessageDialog(mainFrame, "User " + caller.getRemoteNick() + " has declined your call.");
-									connection = null;
-								}
-
-							} catch (NullPointerException ex) {                    //Show message that remote user is offline or wrong ip
-								JOptionPane.showMessageDialog(mainFrame, "User with ip is offline or there is no Internet connection");
-								connection = null;
-							}
-						}
-					}).start();
-				}
-				else
-					JOptionPane.showMessageDialog(mainFrame, "Not enough actual parametrise");
-			}
-	    });
-
-
 		DisconBut.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -372,8 +333,88 @@ public class MainForm implements Observer{
 				disconnect();
 			}
 		});
+
+//-----------------Connect button options---------------------
+		ConBut.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				activateConnectButton();
+			}
+	    });
 	}
 
+	public void activateConnectButton(){
+		if (localLoginAndRemoteAddressIsNotEmpty())
+		{
+			System.out.println("Local login: " + localLogin.getText());
+			runCallThread();
+		}
+		else
+		showNotEnoughParametersMessage();
+	}
+
+	private boolean localLoginAndRemoteAddressIsNotEmpty(){
+		return !(localLogin.getText().equals("") && remoteAddress.getText().equals(""));
+	}
+
+	public void showNotEnoughParametersMessage(){
+		JOptionPane.showMessageDialog(mainFrame, "Not enough actual parameters");
+	}
+
+	private void runCallThread(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				caller = new Caller(localLogin.getText(), remoteAddress.getText());
+				connection = caller.call();
+				checkCallStatus(caller.getCallStatus());
+				System.out.println("Call status: " + caller.getCallStatus());
+			}
+		}).start();
+	}
+
+	private void checkCallStatus(Caller.CallStatus status) {
+		switch (status) {
+			case OK:
+				remlog.setText(caller.getRemoteNick());
+				notificationAboutSuccessConnection();
+				break;
+
+			case BUSY:
+				showRemoteUserIsBusyNotification();
+				break;
+
+			case REJECTED:
+				showRemoteUserIsRejectedYourCallNotification();
+				break;
+
+			case NOT_ACCESSIBLE:
+				showRemoteUserIsNotAccessibleNotification();
+				break;
+
+			case NO_SERVICE:
+				showRemoteUserDoesNoteExistNotification();
+				break;
+		}
+	}
+
+	private void showRemoteUserIsBusyNotification(){
+		JOptionPane.showMessageDialog(mainFrame, "User " + caller.getRemoteNick() + " is busy");
+	}
+
+	private void showRemoteUserIsRejectedYourCallNotification(){
+		JOptionPane.showMessageDialog(mainFrame, "User " + caller.getRemoteNick() + " has declined your call.");
+	}
+
+	private void showRemoteUserIsNotAccessibleNotification(){
+		JOptionPane.showMessageDialog(mainFrame, "User is not accessible");
+	}
+
+	private void showRemoteUserDoesNoteExistNotification(){
+		JOptionPane.showMessageDialog(mainFrame, "User does not exist");
+	}
+
+	//------------End of connect button options-----------------------------
 	public boolean acceptOrRejectMessage(String nick, String remoteAddress){
 		Object[] options = {"Receive","Reject"};
 		int dialogResult = JOptionPane.showOptionDialog(mainFrame,"User "+ nick + " with ip " + remoteAddress +
@@ -414,8 +455,8 @@ public class MainForm implements Observer{
 	}
 
 	public void printNickAndMessage(String nick, String message){
-		dlm.addElement("<html>" + nick + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + message + " </span></html>");
-		list.setModel(dlm);
+		messageShowing.addElement("<html>" + nick + " " + new Date(System.currentTimeMillis()).toLocaleString() + ":<br>" + message + " </span></html>");
+		list.setModel(messageShowing);
 	}
 
 	public void showDisconnectMessage(){

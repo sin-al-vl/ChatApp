@@ -27,11 +27,15 @@ public class Connection  {
     }
 
     public void accept() throws IOException {
+        waitStartAccepting(Constants.WAIT_UNTIL_REMOTE_USER_START_ACCEPTING_IN_MILLIS);
+
         socket.getOutputStream().write("Accepted\n".getBytes(Constants.CHARSET_NAME));
         socket.getOutputStream().flush();
     }
 
     public void reject() throws IOException {
+        waitStartAccepting(Constants.WAIT_UNTIL_REMOTE_USER_START_ACCEPTING_IN_MILLIS);
+
         socket.getOutputStream().write("Rejected\n".getBytes(Constants.CHARSET_NAME));
         socket.getOutputStream().flush();
     }
@@ -47,6 +51,12 @@ public class Connection  {
         socket.getOutputStream().flush();
 
         isActual = false;
+    }
+
+    private void waitStartAccepting(long millis){
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ignored){}
     }
 
     public boolean isActual(){

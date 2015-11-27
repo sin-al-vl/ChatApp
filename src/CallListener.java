@@ -5,8 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.Scanner;
-
 /**
  * Created by Rogdan on 08.11.2015.
  */
@@ -36,6 +36,7 @@ public class CallListener {
     }
 
     private String receiveRemoteNick(Connection connection) throws IOException{
+   //     System.out.println("First receiving in call listener(remote nick): " + new Date().toLocaleString());
         Command c = connection.receive();
         return c.toString().substring((Constants.START_NICK_POSITION));
     }
