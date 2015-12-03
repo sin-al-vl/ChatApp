@@ -1,4 +1,4 @@
-package org.eclipse.wb.swing;
+/*package org.eclipse.wb.swing;*/
 
 import java.awt.EventQueue;
 
@@ -61,7 +61,7 @@ public class HelloWindow  extends JPanel{
 		
 		text = new JLabel("<html><div style=\"text-align: center;\">Hello! Welcome to our program. It is an app for chating with your friends. Before starting, please chouse the them of the program below. Then autorize. If you here at first, create your nick and password and press the registrate button. Have a nice day)</html>");
 		text.setHorizontalTextPosition(SwingConstants.CENTER);
-		text.setFont(new Font(Mode.font[mode], Font.BOLD, Mode.fontSize[mode]));
+		text.setFont(new Font(Constants.font[mode], Font.BOLD, Constants.fontSize[mode]));
 		text.setHorizontalAlignment(SwingConstants.CENTER);
 		add(text, BorderLayout.NORTH);
 		
@@ -76,7 +76,7 @@ public class HelloWindow  extends JPanel{
 		panelWork.setOpaque(false);
 		
 		textNick = new JLabel("Nick");
-		textNick.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
+		textNick.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
 		GridBagConstraints gbc_textNick = new GridBagConstraints();
 		gbc_textNick.insets = new Insets(0, 0, 5, 5);
 		gbc_textNick.gridx = 0;
@@ -84,7 +84,7 @@ public class HelloWindow  extends JPanel{
 		panelWork.add(textNick, gbc_textNick);
 		
 		nick = new JTextField();
-		nick.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
+		nick.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
 		GridBagConstraints gbc_nick = new GridBagConstraints();
 		gbc_nick.insets = new Insets(0, 0, 5, 5);
 		gbc_nick.fill = GridBagConstraints.BOTH;
@@ -95,7 +95,7 @@ public class HelloWindow  extends JPanel{
 		
 		enterButton = new JLabel("");
 		enterButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		enterButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\green\\enterbut.png"));
+		enterButton.setIcon(new ImageIcon(Constants.graphicPath + "green\\enterbut.png"));
 		GridBagConstraints gbc_enterButton = new GridBagConstraints();
 		gbc_enterButton.insets = new Insets(0, 0, 5, 0);
 		gbc_enterButton.gridx = 2;
@@ -103,7 +103,7 @@ public class HelloWindow  extends JPanel{
 		panelWork.add(enterButton, gbc_enterButton);
 		
 		textPassword = new JLabel("Password");
-		textPassword.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
+		textPassword.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
 		GridBagConstraints gbc_textPassword = new GridBagConstraints();
 		gbc_textPassword.insets = new Insets(0, 0, 0, 5);
 		gbc_textPassword.gridx = 0;
@@ -111,7 +111,7 @@ public class HelloWindow  extends JPanel{
 		panelWork.add(textPassword, gbc_textPassword);
 		
 		password = new JPasswordField();
-		password.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
+		password.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
 		GridBagConstraints gbc_password = new GridBagConstraints();
 		gbc_password.insets = new Insets(0, 0, 0, 5);
 		gbc_password.fill = GridBagConstraints.BOTH;
@@ -121,7 +121,7 @@ public class HelloWindow  extends JPanel{
 		
 		registrationButton = new JLabel("");
 		registrationButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		registrationButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\green\\regbut.png"));
+		registrationButton.setIcon(new ImageIcon(Constants.graphicPath + "green\\regbut.png"));
 		GridBagConstraints gbc_registrationButton = new GridBagConstraints();
 		gbc_registrationButton.gridx = 2;
 		gbc_registrationButton.gridy = 1;
@@ -141,7 +141,7 @@ public class HelloWindow  extends JPanel{
 		StandartRB.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		StandartRB.setSelected(true);
 		StandartRB.setOpaque(false);
-		StandartRB.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
+		StandartRB.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
 		GridBagConstraints gbc_StandartRB = new GridBagConstraints();
 		gbc_StandartRB.insets = new Insets(0, 0, 0, 5);
 		gbc_StandartRB.gridx = 0;
@@ -152,7 +152,7 @@ public class HelloWindow  extends JPanel{
 		DarkRB = new JRadioButton("Dark");
 		DarkRB.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		DarkRB.setOpaque(false);
-		DarkRB.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
+		DarkRB.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
 		GridBagConstraints gbc_DarkRB = new GridBagConstraints();
 		gbc_DarkRB.insets = new Insets(0, 0, 0, 5);
 		gbc_DarkRB.gridx = 1;
@@ -163,7 +163,7 @@ public class HelloWindow  extends JPanel{
 		CuteRB = new JRadioButton("Cute");
 		CuteRB.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		CuteRB.setOpaque(false);
-		CuteRB.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
+		CuteRB.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
 		GridBagConstraints gbc_CuteRB = new GridBagConstraints();
 		gbc_CuteRB.gridx = 2;
 		gbc_CuteRB.gridy = 0;
@@ -220,11 +220,11 @@ public class HelloWindow  extends JPanel{
 			
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				enterButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbutchoise.png"));
+				enterButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbutchoise.png"));
 			}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				enterButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+				enterButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
 			}
 		});
 		
@@ -240,11 +240,11 @@ public class HelloWindow  extends JPanel{
 			
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				registrationButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\regbutchoise.png"));
+				registrationButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\regbutchoise.png"));
 			}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				registrationButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\regbut.png"));
+				registrationButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\regbut.png"));
 			}
 		});
 		
@@ -256,24 +256,24 @@ public class HelloWindow  extends JPanel{
 
 	public void setMode(int mode) {
 		this.mode = mode;
-		enterButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
-		registrationButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\regbut.png"));
-		text.setFont(new Font(Mode.font[mode], Font.BOLD, Mode.fontSize[mode]));
-		text.setForeground(Mode.fontColor[mode]);
-		textNick.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
-		textNick.setForeground(Mode.fontColor[mode]);
-		nick.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
-		nick.setForeground(Mode.fontColor[0]);
-		textPassword.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
-		textPassword.setForeground(Mode.fontColor[mode]);
-		password.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
-		password.setForeground(Mode.fontColor[0]);
-		StandartRB.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
-		StandartRB.setForeground(Mode.fontColor[mode]);
-		DarkRB.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
-		DarkRB.setForeground(Mode.fontColor[mode]);
-		CuteRB.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]));
-		CuteRB.setForeground(Mode.fontColor[mode]);
+		enterButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
+		registrationButton.setIcon(new ImageIcon(Constants.graphicPath+Constants.folder[mode]+"\\regbut.png"));
+				text.setFont(new Font(Constants.font[mode], Font.BOLD, Constants.fontSize[mode]));
+		text.setForeground(Constants.fontColor[mode]);
+		textNick.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
+		textNick.setForeground(Constants.fontColor[mode]);
+		nick.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
+		nick.setForeground(Constants.fontColor[0]);
+		textPassword.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
+		textPassword.setForeground(Constants.fontColor[mode]);
+		password.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
+		password.setForeground(Constants.fontColor[0]);
+		StandartRB.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
+		StandartRB.setForeground(Constants.fontColor[mode]);
+		DarkRB.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
+		DarkRB.setForeground(Constants.fontColor[mode]);
+		CuteRB.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]));
+		CuteRB.setForeground(Constants.fontColor[mode]);
 		MainFormNew.setMode(mode);
 	}
 	
@@ -282,7 +282,7 @@ public class HelloWindow  extends JPanel{
 	}
 	
 	public void errorMessage(){
-		ImageIcon icon = new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\sorryImg.png");
+		ImageIcon icon = new ImageIcon(Constants.graphicPath + "sorryImg.png");
 		JOptionPane.showMessageDialog(this,
 		    "<html>Not enough data for entering.<br>Please, write your nick and password.</html>",
 		    "Oops",
@@ -290,7 +290,7 @@ public class HelloWindow  extends JPanel{
 	}
 	
 	public String getPassword() {
-		String pass = new String();
+		String pass = "";
 		for (int i=0;i<password.getPassword().length;i++){
 			pass = pass + password.getPassword()[i];
 		}

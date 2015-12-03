@@ -51,6 +51,7 @@ public class Connection  {
         socket.getOutputStream().flush();
 
         isActual = false;
+        socket.close();
     }
 
     private void waitStartAccepting(long millis){

@@ -1,4 +1,6 @@
-package org.eclipse.wb.swing;
+/*package org.eclipse.wb.swing;*/
+
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 
 import java.awt.EventQueue;
 
@@ -64,7 +66,7 @@ public class Contacts extends JPanel{
 		setBounds(0, 0, 594, 571);
 		setLayout(new BorderLayout(0, 0));
 		setOpaque(false);
-		
+
 		JPanel connectPanel = new JPanel();
 		add(connectPanel, BorderLayout.NORTH);
 		GridBagLayout gbl_connectPanel = new GridBagLayout();
@@ -74,7 +76,7 @@ public class Contacts extends JPanel{
 		gbl_connectPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		connectPanel.setOpaque(false);
 		connectPanel.setLayout(gbl_connectPanel);
-		
+
 		textNick = new JLabel("Nick");
 		textNick.setHorizontalAlignment(SwingConstants.CENTER);
 		textNick.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -84,7 +86,7 @@ public class Contacts extends JPanel{
 		gbc_textNick.gridx = 0;
 		gbc_textNick.gridy = 0;
 		connectPanel.add(textNick, gbc_textNick);
-		
+
 		nick = new JTextField();
 		GridBagConstraints gbc_nick = new GridBagConstraints();
 		gbc_nick.fill = GridBagConstraints.BOTH;
@@ -93,7 +95,7 @@ public class Contacts extends JPanel{
 		gbc_nick.gridy = 0;
 		connectPanel.add(nick, gbc_nick);
 		nick.setColumns(10);
-		
+
 		textIP = new JLabel("IP");
 		GridBagConstraints gbc_textIP = new GridBagConstraints();
 		gbc_textIP.fill = GridBagConstraints.VERTICAL;
@@ -101,7 +103,7 @@ public class Contacts extends JPanel{
 		gbc_textIP.gridx = 2;
 		gbc_textIP.gridy = 0;
 		connectPanel.add(textIP, gbc_textIP);
-		
+
 		ip = new JTextField();
 		GridBagConstraints gbc_ip = new GridBagConstraints();
 		gbc_ip.fill = GridBagConstraints.BOTH;
@@ -110,9 +112,9 @@ public class Contacts extends JPanel{
 		gbc_ip.gridy = 0;
 		connectPanel.add(ip, gbc_ip);
 		ip.setColumns(10);
-		
+
 		connectButton = new JLabel("");
-		connectButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+		connectButton.setIcon(new ImageIcon(Constants.graphicPath+Constants.folder[mode]+"\\enterbut.png"));
 		connectButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		connectButton.setHorizontalTextPosition(SwingConstants.RIGHT);
 		connectButton.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -121,7 +123,7 @@ public class Contacts extends JPanel{
 		gbc_connectButton.gridx = 4;
 		gbc_connectButton.gridy = 0;
 		connectPanel.add(connectButton, gbc_connectButton);
-		
+
 		JPanel contactListPanel = new JPanel();
 		add(contactListPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contactListPanel = new GridBagLayout();
@@ -131,7 +133,7 @@ public class Contacts extends JPanel{
 		gbl_contactListPanel.rowWeights = new double[]{0.0, 0.0, 1.0, Double.MIN_VALUE};
 		contactListPanel.setOpaque(false);
 		contactListPanel.setLayout(gbl_contactListPanel);
-		
+
 		text = new JLabel("Or you can chouse interlocutor from the list below");
 		GridBagConstraints gbc_text = new GridBagConstraints();
 		gbc_text.fill = GridBagConstraints.VERTICAL;
@@ -139,7 +141,7 @@ public class Contacts extends JPanel{
 		gbc_text.gridx = 0;
 		gbc_text.gridy = 0;
 		contactListPanel.add(text, gbc_text);
-		
+
 		search = new JTextField();
 		GridBagConstraints gbc_search = new GridBagConstraints();
 		gbc_search.insets = new Insets(0, 0, 5, 0);
@@ -148,7 +150,7 @@ public class Contacts extends JPanel{
 		gbc_search.gridy = 1;
 		contactListPanel.add(search, gbc_search);
 		search.setColumns(10);
-		
+
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.fill = GridBagConstraints.BOTH;
@@ -156,13 +158,13 @@ public class Contacts extends JPanel{
 		gbc_panel.gridy = 2;
 		contactListPanel.add(panel, gbc_panel);
 		panel.setLayout(new BorderLayout(0, 0));
-		
+
 		list = new JList();
 		panel.add(list);
-		
+
 		JScrollPane scrollBar = new JScrollPane(list,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED ,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		panel.add(scrollBar, BorderLayout.CENTER);
-		
+
 		JPanel workWithContactsPanel = new JPanel();
 		workWithContactsPanel.setOpaque(false);
 		add(workWithContactsPanel, BorderLayout.SOUTH);
@@ -172,9 +174,9 @@ public class Contacts extends JPanel{
 		gbl_workWithContactsPanel.columnWeights = new double[]{1.0, 1.0, 1.0, Double.MIN_VALUE};
 		gbl_workWithContactsPanel.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 		workWithContactsPanel.setLayout(gbl_workWithContactsPanel);
-		
+
 		addNewButton = new JLabel("");
-		addNewButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+		addNewButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
 		addNewButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		GridBagConstraints gbc_addNewButton = new GridBagConstraints();
 		gbc_addNewButton.fill = GridBagConstraints.VERTICAL;
@@ -182,9 +184,9 @@ public class Contacts extends JPanel{
 		gbc_addNewButton.gridx = 0;
 		gbc_addNewButton.gridy = 0;
 		workWithContactsPanel.add(addNewButton, gbc_addNewButton);
-		
+
 		deleteButton = new JLabel("");
-		deleteButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+		deleteButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
 		deleteButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		GridBagConstraints gbc_deleteButton = new GridBagConstraints();
 		gbc_deleteButton.fill = GridBagConstraints.VERTICAL;
@@ -192,9 +194,9 @@ public class Contacts extends JPanel{
 		gbc_deleteButton.gridx = 1;
 		gbc_deleteButton.gridy = 0;
 		workWithContactsPanel.add(deleteButton, gbc_deleteButton);
-		
+
 		deleteAllButton = new JLabel("");
-		deleteAllButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+		deleteAllButton.setIcon(new ImageIcon(Constants.graphicPath +Constants.folder[mode] + "\\enterbut.png"));
 		deleteAllButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		GridBagConstraints gbc_deleteAllButton = new GridBagConstraints();
 		gbc_deleteAllButton.fill = GridBagConstraints.BOTH;
@@ -209,17 +211,17 @@ public class Contacts extends JPanel{
 			public void mouseClicked(MouseEvent arg0) {
 				MainFormNew.contactsHide();
 			}
-			
+
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				connectButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbutchoise.png"));
+				connectButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbutchoise.png"));
 			}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				connectButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+				connectButton.setIcon(new ImageIcon(Constants.graphicPath+Constants.folder[mode]+"\\enterbut.png"));
 			}
 		});
-		
+
 		addNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -228,17 +230,17 @@ public class Contacts extends JPanel{
 					list.setModel(listModel);
 				}
 			}
-			
+
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				addNewButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbutchoise.png"));
+				addNewButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbutchoise.png"));
 			}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				addNewButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+				addNewButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
 			}
 		});
-		
+
 		deleteButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -251,14 +253,14 @@ public class Contacts extends JPanel{
 			}
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				deleteButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbutchoise.png"));
+				deleteButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbutchoise.png"));
 			}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				deleteButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+				deleteButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
 			}
 		});
-		
+
 		deleteAllButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -271,14 +273,14 @@ public class Contacts extends JPanel{
 			}
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				deleteAllButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbutchoise.png"));
+				deleteAllButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbutchoise.png"));
 			}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				deleteAllButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+				deleteAllButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
 			}
 		});
-		
+
 		list.addListSelectionListener(new ListSelectionListener(){
 
 			@Override
@@ -303,57 +305,57 @@ public class Contacts extends JPanel{
 				nick.setText(nickFriend);
 				ip.setText(ipFriend);
 			}
-			
+
 		});
 	}
-	
+
 	public void setMode(int mode){
 		this.mode = mode;
-		connectButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
-		addNewButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
-		deleteButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
-		deleteAllButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
-		text.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]-2));
-		text.setForeground(Mode.fontColor[mode]);
-		textNick.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]-2));
-		textNick.setForeground(Mode.fontColor[mode]);
-		textIP.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]-2));
-		textIP.setForeground(Mode.fontColor[mode]);
-		nick.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]-2));
-		nick.setForeground(Mode.fontColor[0]);
-		ip.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]-2));
-		ip.setForeground(Mode.fontColor[0]);
-		search.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]-2));
-		search.setForeground(Mode.fontColor[0]);
-		list.setFont(new Font(Mode.font[mode], Font.PLAIN, Mode.fontSize[mode]-2));
-		list.setForeground(Mode.fontColor[0]);
+		connectButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
+		addNewButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
+		deleteButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
+		deleteAllButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
+		text.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]-2));
+		text.setForeground(Constants.fontColor[mode]);
+		textNick.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]-2));
+		textNick.setForeground(Constants.fontColor[mode]);
+		textIP.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]-2));
+		textIP.setForeground(Constants.fontColor[mode]);
+		nick.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]-2));
+		nick.setForeground(Constants.fontColor[0]);
+		ip.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]-2));
+		ip.setForeground(Constants.fontColor[0]);
+		search.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]-2));
+		search.setForeground(Constants.fontColor[0]);
+		list.setFont(new Font(Constants.font[mode], Font.PLAIN, Constants.fontSize[mode]-2));
+		list.setForeground(Constants.fontColor[0]);
 	}
-	
+
 	public boolean questionMessage(String action){
 		String question = "";
 		if (action.equals("add")) {question = "Would you like to add user "+getNick()+" with IP: "+getIP()+" to your friend list?";}
 		if (action.equals("delete")) {question = "Would you like to delete user "+getNick()+" with IP: "+getIP()+" from your friend list?";}
 		if (action.equals("delete all")) {question = "Would you like to remove all users from your friend list?";}
 		boolean ans = false;
-		ImageIcon icon = new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\questionImg.png");
+		ImageIcon icon = new ImageIcon("Constants.graphicPath\\questionImg.png");
 		Object[] options = {"Yes", "No"};
 		int dialogResult = JOptionPane.showOptionDialog(this, question, "Adding a new friend", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, icon, options, options[0]);
 		if (dialogResult == JOptionPane.YES_OPTION){ans=true;}
 		return ans;
 	}
-	
+
 	public String getNick(){
 		return nick.getText();
 	}
-	
+
 	public String getIP(){
 		return ip.getText();
 	}
-	
+
 	public void setNick(String nick){
 		this.nick.setText(nick);
 	}
-	
+
 	public void setIP(String ip){
 		this.ip.setText(ip);
 	}

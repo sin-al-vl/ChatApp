@@ -1,4 +1,4 @@
-package org.eclipse.wb.swing;
+/*package org.eclipse.wb.swing;*/
 
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -65,7 +65,7 @@ public class Dialog extends JPanel{
 		disconnectPanel.add(text, gbc_text);
 		
 		disconnectButton = new JLabel("");
-		disconnectButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\cute\\enterbut.png"));
+		disconnectButton.setIcon(new ImageIcon(Constants.graphicPath + "cute\\enterbut.png"));
 		GridBagConstraints gbc_disconnectButton = new GridBagConstraints();
 		gbc_disconnectButton.gridx = 1;
 		gbc_disconnectButton.gridy = 0;
@@ -91,7 +91,7 @@ public class Dialog extends JPanel{
 		textMessage.setColumns(10);
 		
 		sendButton = new JLabel("");
-		sendButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\cute\\enterbut.png"));
+		sendButton.setIcon(new ImageIcon(Constants.graphicPath + "cute\\enterbut.png"));
 		GridBagConstraints gbc_sendButton = new GridBagConstraints();
 		gbc_sendButton.gridx = 1;
 		gbc_sendButton.gridy = 0;
@@ -109,35 +109,35 @@ public class Dialog extends JPanel{
 		sendButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				sendButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbutchoise.png"));
+				sendButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbutchoise.png"));
 			}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				sendButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+				sendButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
 			}
 		});
 		
 		disconnectButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent arg0) {
-				disconnectButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbutchoise.png"));
+				disconnectButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbutchoise.png"));
 			}
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				disconnectButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
+				disconnectButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
 			}
 		});
 	}
 	
 	public void setMode(int mode){
 		this.mode = mode;
-		sendButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
-		disconnectButton.setIcon(new ImageIcon("D:\\Sofia\\Eclipse\\GH\\src\\org\\eclipse\\wb\\swing\\grafic\\"+Mode.folder[mode]+"\\enterbut.png"));
-		text.setFont(new Font(Mode.font[mode], Font.BOLD, Mode.fontSize[mode]));
-		text.setForeground(Mode.fontColor[mode]);
-		textMessage.setFont(new Font(Mode.font[mode], Font.BOLD, Mode.fontSize[mode]));
-		textMessage.setForeground(Mode.fontColor[mode]);
-		list.setFont(new Font(Mode.font[mode], Font.BOLD, Mode.fontSize[mode]));
-		list.setForeground(Mode.fontColor[mode]);
+		sendButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
+		disconnectButton.setIcon(new ImageIcon(Constants.graphicPath + Constants.folder[mode]+"\\enterbut.png"));
+		text.setFont(new Font(Constants.font[mode], Font.BOLD, Constants.fontSize[mode]));
+		text.setForeground(Constants.fontColor[mode]);
+		textMessage.setFont(new Font(Constants.font[mode], Font.BOLD, Constants.fontSize[mode]));
+		textMessage.setForeground(Constants.fontColor[mode]);
+		list.setFont(new Font(Constants.font[mode], Font.BOLD, Constants.fontSize[mode]));
+		list.setForeground(Constants.fontColor[mode]);
 	}
 }

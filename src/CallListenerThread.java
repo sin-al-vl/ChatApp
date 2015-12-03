@@ -76,6 +76,7 @@ public class CallListenerThread implements Runnable {
                     acceptNewConnectionAndDisconnectPrev(connection);
             }
             catch (IOException e){
+                System.out.println("Close");
                 statusOfLastConnection = Caller.CallStatus.NOT_ACCESSIBLE;
                 e.printStackTrace();
             }

@@ -1,4 +1,4 @@
-package org.eclipse.wb.swing;
+/*package org.eclipse.wb.swing;*/
 
 import java.awt.EventQueue;
 
@@ -10,7 +10,7 @@ import java.awt.BorderLayout;
 
 public class MainFormNew {
 
-	private JFrame frame;
+	public static JFrame frame;
 	private static HelloWindow helloPanel = new HelloWindow();
 	private static Contacts contactsPanel = new Contacts();
 	private static Dialog dialogPanel = new Dialog();
@@ -26,7 +26,7 @@ public class MainFormNew {
 			public void run() {
 				try {
 					MainFormNew window = new MainFormNew();
-					window.frame.setVisible(true);
+					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
