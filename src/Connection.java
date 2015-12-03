@@ -90,7 +90,6 @@ public class Connection  {
                 return COMMAND_HASH_MAP.get(line.toLowerCase());
 
         } else return null;
-
     }
 
     static final HashMap<String, Command> COMMAND_HASH_MAP = new HashMap<String, Command>(){{

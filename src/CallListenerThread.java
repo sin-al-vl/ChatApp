@@ -84,14 +84,11 @@ public class CallListenerThread implements Runnable {
 
     private void sendBusyOrRejected(Connection connection) throws IOException{
         if (callListener.isBusy()){
-         //   System.out.println("Sanding busy in listener thread: " + new Date().toLocaleString());
             connection.sendNickBusy(getLocalNick());
             statusOfLastConnection = Caller.CallStatus.BUSY;
         }
         else {
-          //  System.out.println("Sanding hello in listener thread: " + new Date().toLocaleString());
             connection.sendNickHello(getLocalNick());
-//            System.out.println("Sanding reject in listener thread: " + new Date().toLocaleString());
             connection.reject();
             statusOfLastConnection = Caller.CallStatus.REJECTED;
         }
@@ -112,12 +109,10 @@ public class CallListenerThread implements Runnable {
     }
 
     private void acceptNewConnection(Connection connection) throws IOException{
-   //     System.out.println("Sanding hello in listener thread: " + new Date().toLocaleString());
         connection.sendNickHello(getLocalNick());
         setBusy(true);
 
         statusOfLastConnection = Caller.CallStatus.OK;
-  //      System.out.println("Sanding accept in listener thread: " + new Date().toLocaleString());
         connection.accept();
 
         lastConnection = connection;
