@@ -2,8 +2,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.Date;
-import java.util.HashMap;
+
 /**
  * Created by Rogdan on 02.11.2015.
  */
@@ -88,7 +87,7 @@ public class Caller {
 
     private void runCommandListenerThreadAndAddObserver(Connection connection){
         CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
-        commandListenerThread.addObserver(MainForm.window);
+        commandListenerThread.addObserver(Logic.logicForDialog);  //Logic in dialogPanel
     }
 
     public void setLocalNick(String localNick) {

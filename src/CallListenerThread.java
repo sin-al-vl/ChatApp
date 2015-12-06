@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 /**
@@ -124,7 +123,7 @@ public class CallListenerThread implements Runnable {
 
     private void runCommandListener(Connection connection){
         CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
-        commandListenerThread.addObserver(MainForm.window);
+        commandListenerThread.addObserver(Logic.logicForDialog); // Logic in dialog panel
     }
 
     public void stop(){
