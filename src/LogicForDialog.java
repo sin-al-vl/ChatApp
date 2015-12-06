@@ -36,6 +36,8 @@ public class LogicForDialog implements Observer{
         initializeApplyButtonLogic();
         initializeConnectButtonAction();
         initializeDisconnectButtonAction();
+
+        setDisconnectAndSendButtonEnabled(false);
     }
 
     //Start connect button initialize
@@ -72,6 +74,9 @@ public class LogicForDialog implements Observer{
             case OK:
                 dialogPanel.setRemoteNick(remoteNick);
                 popUpWindow.successConnectionNotification(remoteNick);
+                setConnectButtonEnabled(false);
+                setDisconnectAndSendButtonEnabled(true);
+                clearMessageList();
                 break;
 
             case BUSY:
@@ -112,6 +117,9 @@ public class LogicForDialog implements Observer{
 
         dialogPanel.setRemoteNick("");
         dialogPanel.setRemoteAddress("");
+        setConnectButtonEnabled(true);
+        setDisconnectAndSendButtonEnabled(false);
+
         connection = null;
         caller = null;
     }
@@ -131,7 +139,6 @@ public class LogicForDialog implements Observer{
                     popUpWindow.messageNotSandNotification();
                     disconnect();
                 }
-
             }
             dialogPanel.clearEnterMessageFieldAndRequestFocus();
         });
@@ -161,24 +168,39 @@ public class LogicForDialog implements Observer{
 
     private void initializeApplyButtonLogic(){
         JButton applyButton = dialogPanel.getApplyButton();
+
         applyButton.addActionListener(e -> {
-            if (callListenerThread == null) {
-                System.out.println("Added obs");
+            if (dialogPanel.getLocalNick().equals("")) {
+                popUpWindow.notEnoughParametersNotification();
+            }
+            else {
                 callListenerThread = new CallListenerThread(new CallListener(dialogPanel.getLocalNick()));
                 callListenerThread.addObserver(this);
-            } else {
-                callListenerThread.setLocalNick(dialogPanel.getLocalNick());
+                dialogPanel.getApplyButton().setEnabled(false);  //Set enabled false after first press
             }
         });
+    }
+
+    private void setDisconnectAndSendButtonEnabled(boolean enabled){
+        dialogPanel.getSendButton().setEnabled(enabled);
+        dialogPanel.getDisconnectButton().setEnabled(enabled);
+    }
+
+    private void setConnectButtonEnabled(boolean enabled){
+        dialogPanel.getConnectButton().setEnabled(enabled);
+    }
+
+    private void clearMessageList(){
+        dialogPanel.cleatMessageList();
     }
 
     public void update(Observable who, Object updateInfo) {
         if (updateInfo instanceof CallListener)
             getInsideCall((CallListener) updateInfo);
 
-        else if (updateInfo instanceof Connection)
+        else if (updateInfo instanceof Connection) {
             connection = (Connection) updateInfo;
-
+        }
         else if (updateInfo instanceof Command)
         {
             Command updateCommand = (Command) updateInfo;
@@ -187,19 +209,26 @@ public class LogicForDialog implements Observer{
                 dialogPanel.printNickAndMessage(dialogPanel.getRemoteNick(), updateInfo.toString());
             else if (updateCommand.toString().equals("DISCONNECT") || updateCommand.toString().equals("REJECT"))
             {
-                popUpWindow.disconnectNotification(dialogPanel.getRemoteNick());
+                String remoteNick = dialogPanel.getRemoteNick();
                 disconnect();
+                popUpWindow.disconnectNotification(remoteNick);
             }
         }
         else if (updateInfo instanceof String){
             String remoteNick = updateInfo.toString().substring(0, updateInfo.toString().lastIndexOf(' '));
             String remoteAddress = updateInfo.toString().substring(updateInfo.toString().lastIndexOf(' ') + 1);
 
-            MainForm.tabbedPane.setSelectedIndex(0);
+
+            if (connection != null)
+            try {
+                connection.disconnect();
+                disconnect();
+            } catch (IOException ignore){}
 
             dialogPanel.setRemoteNick(remoteNick);
             dialogPanel.setRemoteAddress(remoteAddress);
             dialogPanel.getConnectButton().doClick();
+            MainForm.tabbedPane.setSelectedIndex(0);
         }
     }
 
@@ -210,6 +239,10 @@ public class LogicForDialog implements Observer{
         if (isReceiveCall){
             dialogPanel.setRemoteNick(callListener.getRemoteNick());
             dialogPanel.setRemoteAddress(callListener.getRemoteAddress());
+
+            setConnectButtonEnabled(false);
+            setDisconnectAndSendButtonEnabled(true);
+            clearMessageList();
         }
 
         callListenerThread.setReceive(isReceiveCall);

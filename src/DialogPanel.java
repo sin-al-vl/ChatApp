@@ -185,6 +185,12 @@ public class DialogPanel extends JPanel implements DialogModule {
         enterMessageField.requestFocus();
     }
 
+    @Override
+    public void cleatMessageList() {
+        messageList.removeAllElements();
+        messageShowing.setModel(messageList);
+    }
+
     //Getters
     public String getLocalNick(){
         return localNickField.getText();

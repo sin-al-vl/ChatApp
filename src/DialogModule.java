@@ -20,4 +20,5 @@ public interface DialogModule {
     void setRemoteAddress(String newAddress);
     void printNickAndMessage(String nick, String message);
     void clearEnterMessageFieldAndRequestFocus();
+    void cleatMessageList();
 }

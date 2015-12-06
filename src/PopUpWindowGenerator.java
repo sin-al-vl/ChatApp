@@ -10,8 +10,7 @@ public class PopUpWindowGenerator {
         this.mainFrame = mainFrame;
     }
 
-    //Rename on "Нету собеседника"
-    public void noInterlocutorNotification(){
+    public void noInterlocutorNotification() {
         JOptionPane.showMessageDialog(mainFrame, "There is no interlocutor");
     }
 

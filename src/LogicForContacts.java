@@ -36,7 +36,6 @@ public class LogicForContacts {
 
     private void initAddButtonAction(){
         JButton addButton = contacts.getAddButton();
-
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
