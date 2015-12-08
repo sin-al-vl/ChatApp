@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
@@ -27,5 +28,9 @@ public class Logic {
         logicForContacts = new LogicForContacts(popUpWindow);
         logicForContacts.addObserver(logicForDialog);
         logicForContacts.initContactsLogic(contacts);
+    }
+
+    public void giveLogic(Component component){
+
     }
 }

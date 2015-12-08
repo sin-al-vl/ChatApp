@@ -24,13 +24,6 @@ public class LogicForDialog implements Observer{
         initializeDialogPanelButtons();
     }
 
-    public void setNickAddressAndConnect(String nick, String address){
-        dialogPanel.setRemoteNick(nick);
-        dialogPanel.setRemoteAddress(address);
-
-        dialogPanel.getConnectButton().doClick();
-    }
-
     private void initializeDialogPanelButtons() {
         initializeSendButtonLogic();
         initializeApplyButtonLogic();
@@ -45,8 +38,11 @@ public class LogicForDialog implements Observer{
         JButton connectButton = dialogPanel.getConnectButton();
 
         connectButton.addActionListener(e -> {
-            if (remoteAddressAndRemoteNickIsEmpty())
+            setConnectButtonEnabled(false);
+            if (remoteAddressAndRemoteNickIsEmpty()) {
                 popUpWindow.notEnoughParametersNotification();
+                setConnectButtonEnabled(true);
+            }
             else
                 runCallingThread();
         });
@@ -64,6 +60,9 @@ public class LogicForDialog implements Observer{
             caller = new Caller(dialogPanel.getLocalNick(), dialogPanel.getRemoteAddress());
             connection = caller.call();
             checkCallStatus(caller.getCallStatus());
+
+            if (caller.getCallStatus() != Caller.CallStatus.OK)
+              setConnectButtonEnabled(true);
         }).start();
     }
 
@@ -74,6 +73,10 @@ public class LogicForDialog implements Observer{
             case OK:
                 dialogPanel.setRemoteNick(remoteNick);
                 popUpWindow.successConnectionNotification(remoteNick);
+
+                if (callListenerThread != null)
+                   callListenerThread.setBusy(true);
+
                 setConnectButtonEnabled(false);
                 setDisconnectAndSendButtonEnabled(true);
                 clearMessageList();

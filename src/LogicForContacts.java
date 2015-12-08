@@ -1,14 +1,15 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.InetSocketAddress;
 import java.util.Observable;
 import java.util.Observer;
 
 /**
  * Created by Rogdan on 06.12.2015.
+ *
+ * This class give logic for contacts panel, that implements contact module interface
  */
-public class LogicForContacts {
+public class LogicForContacts{
     private ContactsModule contacts;
     private PopUpWindowGenerator popUpWindow;
 
