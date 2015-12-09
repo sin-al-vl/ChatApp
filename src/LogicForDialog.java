@@ -9,6 +9,7 @@ import java.util.Observer;
 /**
  * Created by Rogdan on 06.12.2015.
  */
+
 public class LogicForDialog implements Observer{
     private Connection connection;
     private CallListenerThread callListenerThread;
@@ -76,14 +77,15 @@ public class LogicForDialog implements Observer{
         switch (status) {
             case OK:
                 dialogPanel.setRemoteNick(remoteNick);
-                popUpWindow.successConnectionNotification(remoteNick);
 
-                if (callListenerThread != null)
+                if (callListenerThread != null) {
                     callListenerThread.setBusy(true);
+                }
 
                 setConnectButtonEnabled(false);
                 setDisconnectAndSendButtonEnabled(true);
                 clearMessageList();
+                popUpWindow.successConnectionNotification(remoteNick);
                 break;
 
             case BUSY:
@@ -111,6 +113,7 @@ public class LogicForDialog implements Observer{
         disconnectButton.addActionListener(e -> {
             if (connection != null)
                 try {
+                    dialogPanel.setRemoteAddress("");
                     connection.disconnect();
                 } catch (IOException ignored){
                 }
@@ -123,7 +126,6 @@ public class LogicForDialog implements Observer{
             callListenerThread.setBusy(false);
 
         dialogPanel.setRemoteNick("");
-        dialogPanel.setRemoteAddress("");
         setConnectButtonEnabled(true);
         setDisconnectAndSendButtonEnabled(false);
 
@@ -170,9 +172,9 @@ public class LogicForDialog implements Observer{
                 popUpWindow.notEnoughParametersNotification();
             }
             else {
+                dialogPanel.getApplyButton().setEnabled(false);  //Set enabled false after first press
                 callListenerThread = new CallListenerThread(new CallListener(dialogPanel.getLocalNick()));
                 callListenerThread.addObserver(this);
-                dialogPanel.getApplyButton().setEnabled(false);  //Set enabled false after first press
 
                 serverConnection.setLocalNick(dialogPanel.getLocalNick());
                 serverConnection.connect();
@@ -239,12 +241,11 @@ public class LogicForDialog implements Observer{
         boolean isReceiveCall = popUpWindow.acceptOrRejectMessage(callListener.getRemoteNick(), callListener.getRemoteAddress());
 
         if (isReceiveCall){
-            dialogPanel.setRemoteNick(callListener.getRemoteNick());
-            dialogPanel.setRemoteAddress(callListener.getRemoteAddress());
-
+            clearMessageList();
             setConnectButtonEnabled(false);
             setDisconnectAndSendButtonEnabled(true);
-            clearMessageList();
+            dialogPanel.setRemoteNick(callListener.getRemoteNick());
+            dialogPanel.setRemoteAddress(callListener.getRemoteAddress());
         }
 
         callListenerThread.setReceive(isReceiveCall);

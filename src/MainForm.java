@@ -24,7 +24,8 @@ public class MainForm {
 	}
 
 	private void initialize() {
-        initializeLogic();
+		mainFrame = new JFrame();
+		initializeLogic();
 		initializeMainFrame();
 		initializeTabbedPane();
 
@@ -33,21 +34,21 @@ public class MainForm {
 	}
 
 	private void initializeMainFrame(){
-		mainFrame = new JFrame();
 		mainFrame.setTitle("ChatApp 2015. SunRoSon");
 		mainFrame.getContentPane().setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);
 		mainFrame.setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);
-        mainFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                logic.getServerConnection().goOffline();
-                logic.getServerConnection().disconnect();
 
-                stopProgram();
-            }
+		mainFrame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				logic.getServerConnection().goOffline();
+				logic.getServerConnection().disconnect();
 
-            private void stopProgram(){
-                System.exit(0);
+				stopProgram();
+			}
+
+			private void stopProgram() {
+				System.exit(0);
             }
         });
 		//mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
