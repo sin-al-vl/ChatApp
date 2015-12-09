@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
@@ -30,6 +31,8 @@ public class Logic {
         logicForContacts.addObserver(logicForDialog);
         logicForContacts.initContactsLogic(contacts);
     }
+
+    public void giveLogic(Component component){}
 
     public ServerConnection getServerConnection() {
         return serverConnection;

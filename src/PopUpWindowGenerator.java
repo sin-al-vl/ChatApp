@@ -50,13 +50,12 @@ public class PopUpWindowGenerator {
         Object[] options = {"Receive","Reject"};
 
         int dialogResult = JOptionPane.showOptionDialog(mainFrame,"User "+ remoteNick + " with ip " + remoteAddress +
-                        " is trying to connect with you","Recive connection",
+                        " is trying to connect with you","Receive connection",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,options,options[0]);
 
         return dialogResult == JOptionPane.YES_OPTION;
-
     }
 
     public void noOneFriendSelectedNotification(){
