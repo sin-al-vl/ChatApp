@@ -236,15 +236,4 @@ public class DialogPanel extends JPanel implements DialogModule {
     public void setRemoteNick(String newLogin){
         remoteNickField.setText(newLogin);
     }
-
-    //For testing. Now don`t work, because logic
-    // in CallListenerThread takes from MainProgram
-    public static void main(String[] args) {
-        JFrame j = new JFrame();
-        DialogPanel d = new DialogPanel(new Logic(new PopUpWindowGenerator(j)));
-        j.getContentPane().add(d);
-        j.setSize(Constants.MINIMAL_PROGRAM_DIMENSION);
-        j.setVisible(true);
-        j.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-    }
 }

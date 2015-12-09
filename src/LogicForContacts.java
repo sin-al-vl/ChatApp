@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.text.ParseException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -11,6 +13,9 @@ import java.util.Observer;
 public class LogicForContacts {
     private ContactsModule contacts;
     private PopUpWindowGenerator popUpWindow;
+    private ServerConnection serverConnection;
+    private ContactsFile contactsFile;
+
 
     private Observable myObservable = new Observable(){
         public void notifyObservers(Object arg) {
@@ -19,13 +24,38 @@ public class LogicForContacts {
         }
     };
 
-    public LogicForContacts(PopUpWindowGenerator popUpWindow){
+    public LogicForContacts(PopUpWindowGenerator popUpWindow, ServerConnection serverConnection) {
         this.popUpWindow = popUpWindow;
+        this.serverConnection = serverConnection;
+    }
+
+    private void openContactsFile(){
+        contactsFile = new ContactsFile(Constants.CONTACTS_LIST_PATH);
     }
 
     public void initContactsLogic(ContactsModule contacts){
         this.contacts = contacts;
         initAllButtonsAction();
+
+        String [] contactsList = null;
+
+        openContactsFile();
+
+        try {
+            contactsList = contactsFile.getContacts();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        for (int i = 0; i < contactsList.length; i++) {
+            contacts.addFriend(contactsList[i].substring(0, Constants.NICK_AND_IP_MAX_LENGTH).replace(" ", ""),
+                    contactsList[i].substring(Constants.NICK_AND_IP_MAX_LENGTH ).replace(" ", ""));
+        }
+
+        contactsFile.close();
     }
 
     private void initAllButtonsAction(){
@@ -36,21 +66,26 @@ public class LogicForContacts {
 
     private void initAddButtonAction(){
         JButton addButton = contacts.getAddButton();
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nick = contacts.getEnteredNick();
-                String address = contacts.getEnteredAddress();
+        addButton.addActionListener(e -> {
+            String nick = contacts.getEnteredNick();
+            String address = contacts.getEnteredAddress();
 
-                if (nickAndAddressIsEmpty(nick, address))
-                    popUpWindow.notEnoughParametersNotification();
-                else {
-                    contacts.addFriend(nick, address);
-                    contacts.clearNickAndAddressField();
+            if (nickAndAddressIsEmpty(nick, address))
+                popUpWindow.notEnoughParametersNotification();
+            else {
+                openContactsFile();
+
+                try {
+                    contactsFile.addContact(nick, address);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
+
+                contactsFile.close();
+
+                contacts.addFriend(nick, address);
+                contacts.clearNickAndAddressField();
             }
-
-
         });
     }
 
@@ -61,36 +96,42 @@ public class LogicForContacts {
     private void initDeleteButtonAction(){
         JButton deleteButton = contacts.getDeleteButton();
 
-        deleteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JList friendList = contacts.getContactsList();
-                DefaultListModel friendShowing = contacts.getContactsShowing();
+        deleteButton.addActionListener(e -> {
+            JList friendList = contacts.getContactsList();
+            DefaultListModel friendShowing = contacts.getContactsShowing();
 
-                if (friendList.getSelectedIndex() != -1) {
-                    friendShowing.remove(friendList.getSelectedIndex());
-                    friendList.setModel(friendShowing);
+            if (friendList.getSelectedIndex() != -1) {
+                openContactsFile();
+
+                try {
+                    contactsFile.deleteContact(friendList.getSelectedIndex());
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
                 }
-                else
-                    popUpWindow.noOneFriendSelectedNotification();
+
+                contactsFile.close();
+
+                friendShowing.remove(friendList.getSelectedIndex());
+                friendList.setModel(friendShowing);
             }
+            else
+                popUpWindow.noOneFriendSelectedNotification();
         });
     }
 
     private void initConnectButtonAction(){
         JButton connectButton = contacts.getConnectButton();
 
-        connectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JList friendList = contacts.getContactsList();
-                String addressAndNick = (String) friendList.getSelectedValue();
+        connectButton.addActionListener(e -> {
+            JList friendList = contacts.getContactsList();
+            String addressAndNick = (String) friendList.getSelectedValue();
 
-                if (addressAndNick == null)
-                    popUpWindow.noOneFriendSelectedNotification();
-                else
-                    myObservable.notifyObservers(addressAndNick);
-            }
+            if (addressAndNick == null)
+                popUpWindow.noOneFriendSelectedNotification();
+            else
+                myObservable.notifyObservers(addressAndNick);
         });
     }
 

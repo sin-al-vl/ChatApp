@@ -17,12 +17,12 @@ public class Connection  {
     }
 
     public void sendNickHello(String nick) throws IOException {
-        socket.getOutputStream().write((Constants.ChatApp_VERSION + " user " + nick + "\n").getBytes(Constants.CHARSET_NAME));
+        socket.getOutputStream().write((Constants.ChatApp_VERSION + " user " + safe(nick) + "\n").getBytes(Constants.CHARSET_NAME));
         socket.getOutputStream().flush();
     }
 
     public void sendNickBusy(String nick) throws IOException {
-        socket.getOutputStream().write((Constants.ChatApp_VERSION + " user " + nick + " busy\n").getBytes(Constants.CHARSET_NAME));
+        socket.getOutputStream().write((Constants.ChatApp_VERSION + " user " + safe(nick) + " busy\n").getBytes(Constants.CHARSET_NAME));
         socket.getOutputStream().flush();
     }
 
@@ -68,36 +68,41 @@ public class Connection  {
         Scanner in = new Scanner(new BufferedInputStream(socket.getInputStream()));
         String line = in.nextLine();
 
-        if(line.contains(" ") && line.startsWith(Constants.ChatApp_VERSION)){
+        if (line.startsWith(Constants.ChatApp_VERSION) && line.contains(" user ")) {       //if NickCommand was received
 
-            Boolean isBusy = line.toLowerCase().endsWith(" busy");
-            String nick;
+            return recognizeNickCommand(line);
 
-            if (isBusy)
-                nick = line.substring(line.indexOf(" user ") + 1, line.indexOf(" busy"));
-            else
-                nick = line.substring(line.lastIndexOf(" ") + 1, line.length());
+        } else if (line.toUpperCase().equals(Command.CommandType.MESSAGE.toString())) {    //if MessageCommand was received
 
-            return new NickCommand(Constants.ChatApp_VERSION, nick, isBusy);
+            line = in.nextLine();
+            return new MessageCommand(line);
 
-        } else if(COMMAND_HASH_MAP.containsKey(line.toLowerCase())) {
+        } else if (SIMPLE_COMMAND_HASH_MAP.containsKey(line.toLowerCase())) {              //if simple Command was received
 
-            if(line.toUpperCase().equals(Command.CommandType.MESSAGE.toString())) {
+            return SIMPLE_COMMAND_HASH_MAP.get(line.toLowerCase());
 
-                line = in.nextLine();
-                return new MessageCommand(line);
-
-            } else
-                return COMMAND_HASH_MAP.get(line.toLowerCase());
-
-        } else return null;
+        } else return null;                                                                //if rubbish was received
     }
 
-    static final HashMap<String, Command> COMMAND_HASH_MAP = new HashMap<String, Command>(){{
+    private NickCommand recognizeNickCommand(String line){
+        Boolean isBusy = line.toLowerCase().endsWith(" busy");
+        String nick;
+
+                if (isBusy)
+            nick = line.substring(line.indexOf(" user ") + 6, line.indexOf(" busy"));
+        else
+            nick = line.substring(line.indexOf(" user ") + 6, line.length());
+
+        return new NickCommand(Constants.ChatApp_VERSION, safe(nick), isBusy);
+    }
+
+    private static String safe(String s){
+        return s.replaceAll("['\";]", "").replaceAll("\\s", "");
+    }
+
+    static final HashMap<String, Command> SIMPLE_COMMAND_HASH_MAP = new HashMap<String, Command>(){{
         put("accepted", new Command(Command.CommandType.ACCEPT));
         put("disconnect", new Command(Command.CommandType.DISCONNECT));
-        put("message", new Command(Command.CommandType.MESSAGE));
-        put(Constants.ChatApp_VERSION, new Command(Command.CommandType.NICK));
         put("rejected", new Command(Command.CommandType.REJECT));
     }};
 }

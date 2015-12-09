@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.IOException;
@@ -14,9 +15,11 @@ public class LogicForDialog implements Observer{
     private Caller caller;
     private PopUpWindowGenerator popUpWindow;
     private DialogModule dialogPanel;
+    private ServerConnection serverConnection;
 
-    public LogicForDialog(PopUpWindowGenerator popUpWindow) {
+    public LogicForDialog(PopUpWindowGenerator popUpWindow, ServerConnection serverConnection) {
         this.popUpWindow = popUpWindow;
+        this.serverConnection = serverConnection;
     }
 
     public void initDialogPanelLogic(DialogModule dialogPanel) {
@@ -146,22 +149,11 @@ public class LogicForDialog implements Observer{
         //Initialize "Sending message on press enter"
 
         JTextField enterMessageField = dialogPanel.getEnterMessageField();
-        enterMessageField.addKeyListener(new KeyListener() {
+        enterMessageField.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     sendButton.doClick();
                 }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent arg0) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void keyTyped(KeyEvent arg0) {
-                // TODO Auto-generated method stub
-
             }
         });
     }
@@ -177,6 +169,10 @@ public class LogicForDialog implements Observer{
                 callListenerThread = new CallListenerThread(new CallListener(dialogPanel.getLocalNick()));
                 callListenerThread.addObserver(this);
                 dialogPanel.getApplyButton().setEnabled(false);  //Set enabled false after first press
+
+                serverConnection.setLocalNick(dialogPanel.getLocalNick());
+                serverConnection.connect();
+                serverConnection.goOnline();
             }
         });
     }
@@ -218,7 +214,6 @@ public class LogicForDialog implements Observer{
             String remoteNick = updateInfo.toString().substring(0, updateInfo.toString().lastIndexOf(' '));
             String remoteAddress = updateInfo.toString().substring(updateInfo.toString().lastIndexOf(' ') + 1);
 
-
             if (connection != null)
             try {
                 connection.disconnect();
@@ -229,6 +224,9 @@ public class LogicForDialog implements Observer{
             dialogPanel.setRemoteAddress(remoteAddress);
             dialogPanel.getConnectButton().doClick();
             MainForm.tabbedPane.setSelectedIndex(0);
+        }
+        else if(updateInfo instanceof ServerConnection){
+
         }
     }
 

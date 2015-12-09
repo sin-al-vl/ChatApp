@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
 import javax.swing.*;
 
 public class MainForm {
@@ -22,8 +24,8 @@ public class MainForm {
 	}
 
 	private void initialize() {
+        initializeLogic();
 		initializeMainFrame();
-		initializeLogic();
 		initializeTabbedPane();
 
 		initializeDialogPanel();
@@ -35,7 +37,20 @@ public class MainForm {
 		mainFrame.setTitle("ChatApp 2015. SunRoSon");
 		mainFrame.getContentPane().setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);
 		mainFrame.setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);
-		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                logic.getServerConnection().goOffline();
+                logic.getServerConnection().disconnect();
+
+                stopProgram();
+            }
+
+            private void stopProgram(){
+                System.exit(0);
+            }
+        });
+		//mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.getContentPane().setLayout(new BorderLayout());
 	}
 
@@ -45,9 +60,9 @@ public class MainForm {
 		tabbedPane.setOpaque(false);
 	}
 
-	private void initializeLogic(){
-		logic = new Logic(new PopUpWindowGenerator(mainFrame));
-	}
+	private void initializeLogic() {
+        logic = new Logic(new PopUpWindowGenerator(mainFrame), new ServerConnection(Constants.SERVER_ADDRESS_PATH));
+    }
 
 	private void initializeDialogPanel(){
 		DialogPanel dialogPanel = new DialogPanel(logic);
