@@ -1,8 +1,8 @@
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -44,7 +44,6 @@ public class LogicForDialog implements Observer{
         connectButton.addActionListener(e -> {
             setConnectButtonEnabled(false);
             if (remoteAddressAndRemoteNickIsEmpty()) {
-
                 popUpWindow.notEnoughParametersNotification();
                 setConnectButtonEnabled(true);
 
@@ -63,12 +62,33 @@ public class LogicForDialog implements Observer{
     private void runCallingThread(){
         new Thread(() -> {
             caller = new Caller(dialogPanel.getLocalNick(), dialogPanel.getRemoteAddress());
-            connection = caller.call();
-            checkCallStatus(caller.getCallStatus());
 
-            if (caller.getCallStatus() != Caller.CallStatus.OK)
-                setConnectButtonEnabled(true);
+            try {
+                connection = caller.call();
+                checkCallStatus(caller.getCallStatus());
+
+                if (caller.getCallStatus() != Caller.CallStatus.OK)
+                    setConnectButtonEnabled(true);
+            } catch (NullPointerException | NoSuchElementException ex){
+                System.out.println("Exception in Class LogicForDialog: out of time answer waiting");
+            }
+
         }).start();
+
+        //Timer on answer waiting
+            new Thread (() -> {
+                try {
+                    Thread.sleep(Constants.WAIT_UNTIL_REMOTE_USER_ACCEPT_OR_REJECT_YOUR_CALL_IN_MILLIS);
+                    if (caller.getCallStatus() == null) {
+                        try{
+                            connection.disconnect();
+                        } catch (IOException ignored){}
+
+                        disconnect();
+                        popUpWindow.remoteUserDoesNotRespondNotification();
+                    }
+                } catch (InterruptedException | NullPointerException ignored){}
+            }).start();
     }
 
     private void checkCallStatus(Caller.CallStatus status) {

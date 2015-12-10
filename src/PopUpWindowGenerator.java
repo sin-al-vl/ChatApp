@@ -58,6 +58,10 @@ public class PopUpWindowGenerator {
         return dialogResult == JOptionPane.YES_OPTION;
     }
 
+    public void remoteUserDoesNotRespondNotification(){
+        JOptionPane.showMessageDialog(mainFrame, "Remote user does not respond");
+    }
+
     public void noOneFriendSelectedNotification(){
         JOptionPane.showMessageDialog(mainFrame, "No one friend selected");
     }

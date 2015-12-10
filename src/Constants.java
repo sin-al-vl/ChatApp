@@ -12,6 +12,7 @@ public class Constants {
     public static final String CHARSET_NAME = "UTF-8";
     public static final int START_NICK_POSITION = 18;
     public static final long WAIT_UNTIL_REMOTE_USER_START_ACCEPTING_IN_MILLIS = 30;
+    public static final long WAIT_UNTIL_REMOTE_USER_ACCEPT_OR_REJECT_YOUR_CALL_IN_MILLIS = 10000;
 
     public static final Dimension MINIMAL_PROGRAM_DIMENSION = new Dimension(531, 450);
 

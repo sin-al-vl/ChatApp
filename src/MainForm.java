@@ -1,11 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
 import javax.swing.*;
 
 public class MainForm {
-	private Logic logic;
-	private JFrame mainFrame;
+	private LogicManager logicManager;
+	public static JFrame mainFrame;
 	public static JTabbedPane tabbedPane;
 
 	public static void main(String[] args) {
@@ -14,7 +13,7 @@ public class MainForm {
                 MainForm window = new MainForm();
                 window.mainFrame.setVisible(true);
             } catch (Exception e) {
-                e.printStackTrace();
+				System.exit(0);
             }
         });
 	}
@@ -35,14 +34,19 @@ public class MainForm {
 
 	private void initializeMainFrame(){
 		mainFrame.setTitle("ChatApp 2015. SunRoSon");
+
+		Toolkit kit = Toolkit.getDefaultToolkit();
+		Image img = kit.getImage("res\\chat_icon.png");
+		mainFrame.setIconImage(img);
+
 		mainFrame.getContentPane().setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);
 		mainFrame.setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);
 
 		mainFrame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				logic.getServerConnection().goOffline();
-				logic.getServerConnection().disconnect();
+				logicManager.getServerConnection().goOffline();
+				logicManager.getServerConnection().disconnect();
 
 				stopProgram();
 			}
@@ -62,16 +66,16 @@ public class MainForm {
 	}
 
 	private void initializeLogic() {
-        logic = new Logic(new PopUpWindowGenerator(mainFrame), new ServerConnection(Constants.SERVER_ADDRESS_PATH));
+        logicManager = new LogicManager(new PopUpWindowGenerator(mainFrame), new ServerConnection(Constants.SERVER_ADDRESS_PATH));
     }
 
 	private void initializeDialogPanel(){
-		DialogPanel dialogPanel = new DialogPanel(logic);
+		DialogPanel dialogPanel = new DialogPanel(logicManager);
 		tabbedPane.addTab("Dialog", dialogPanel);
 	}
 
 	private void initializeContacts(){
-		Contacts contacts = new Contacts(logic);
+		Contacts contacts = new Contacts(logicManager);
 		tabbedPane.addTab("Contacts", contacts);
 	}
 

@@ -9,8 +9,6 @@ import java.sql.Date;
 	set background in main form and it will change here
 
     init - initialize. For best reading
-
-    it`s clear code, bitch!
  */
 
 public class DialogPanel extends JPanel implements DialogModule {
@@ -21,9 +19,9 @@ public class DialogPanel extends JPanel implements DialogModule {
     private DefaultListModel messageList;
     private JList messageShowing;
 
-    public DialogPanel(Logic logic) {
+    public DialogPanel(LogicManager logicManager) {
         initAll();
-        logic.initDialogPanelLogic(this);
+        logicManager.initDialogPanelLogic(this);
         setVisible(true);
     }
 

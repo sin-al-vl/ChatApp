@@ -1,3 +1,6 @@
+import sun.applet.Main;
+
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.*;
 import java.util.*;
@@ -35,8 +38,8 @@ public class ServerConnection {
 			con = DriverManager.getConnection(serverAddress,"guest","guest");
 			st = con.createStatement();		
 		} catch (SQLException e) {
-			// TODO throw real error
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(MainForm.mainFrame, "Error in connect to server");
+			//e.printStackTrace();
 		}// catch
 	}
 	

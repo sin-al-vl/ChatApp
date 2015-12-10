@@ -87,7 +87,7 @@ public class Caller {
 
     private void runCommandListenerThreadAndAddObserver(Connection connection){
         CommandListenerThread commandListenerThread = new CommandListenerThread(connection);
-        commandListenerThread.addObserver(Logic.logicForDialog);  //Logic in dialogPanel
+        commandListenerThread.addObserver(LogicManager.logicForDialog);  //Logic in dialogPanel
     }
 
     public void setLocalNick(String localNick) {

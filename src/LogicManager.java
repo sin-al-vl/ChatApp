@@ -10,13 +10,13 @@ import java.util.*;
  * this class give logic to all components.
  */
 
-public class Logic {
+public class LogicManager {
     private PopUpWindowGenerator popUpWindow;
     public static LogicForDialog logicForDialog;
     public static LogicForContacts logicForContacts;
     private ServerConnection serverConnection;
 
-    public Logic(PopUpWindowGenerator popUpWindow, ServerConnection serverConnection) {
+    public LogicManager(PopUpWindowGenerator popUpWindow, ServerConnection serverConnection) {
         this.popUpWindow = popUpWindow;
         this.serverConnection = serverConnection;
     }
@@ -31,8 +31,6 @@ public class Logic {
         logicForContacts.addObserver(logicForDialog);
         logicForContacts.initContactsLogic(contacts);
     }
-
-    public void giveLogic(Component component){}
 
     public ServerConnection getServerConnection() {
         return serverConnection;

@@ -35,6 +35,7 @@ public class LogicForContacts {
     public void initContactsLogic(ContactsModule contacts){
         this.contacts = contacts;
         initAllButtonsAction();
+      //  initOnlineFriends();
 
         String [] contactsList = null;
 
@@ -132,6 +133,17 @@ public class LogicForContacts {
             else
                 myObservable.notifyObservers(addressAndNick);
         });
+    }
+
+    public void initOnlineFriends(){
+        String [] nicks = serverConnection.getAllNicks();
+        String [] ipForNicks = new String[nicks.length];
+
+
+        for(int i = 0; i < nicks.length; i++){
+            ipForNicks[i] = serverConnection.getIpForNick(nicks[i]);
+            contacts.addFriend(nicks[i], ipForNicks[i]);
+        }
     }
 
     public void addObserver(Observer observer){

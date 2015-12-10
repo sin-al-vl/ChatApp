@@ -18,9 +18,9 @@ public class Contacts extends JPanel implements ContactsModule{
     private DefaultListModel contactsShowing;
     private JList contactsList;
 
-    public Contacts(Logic logic){
+    public Contacts(LogicManager logicManager){
         initAll();
-        logic.initContactsLogic(this);
+        logicManager.initContactsLogic(this);
     }
 
     private void initAll(){
