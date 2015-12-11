@@ -35,7 +35,6 @@ public class LogicForContacts {
     public void initContactsLogic(ContactsModule contacts){
         this.contacts = contacts;
         initAllButtonsAction();
-      //  initOnlineFriends();
 
         String [] contactsList = null;
 
@@ -43,9 +42,7 @@ public class LogicForContacts {
 
         try {
             contactsList = contactsFile.getContacts();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
 
@@ -56,6 +53,31 @@ public class LogicForContacts {
         }
 
         contactsFile.close();
+
+        //  initOnlineFriends();
+    }
+
+
+    public void initOnlineFriends(String [] contactsList){
+        int pos = 0;
+        for(String friend : contactsList){
+            boolean isOnline;
+            try{
+                isOnline = serverConnection.isNickOnline(friend.substring(0, friend.indexOf(" ")));   //it doesn't throws for now
+            }catch (Exception e){
+                continue;
+            }
+
+
+            if(isOnline){
+                contacts.setOnline(pos);
+            }
+            else {
+                contacts.setOffline(pos);
+            }
+
+            pos++;
+        }
     }
 
     private void initAllButtonsAction(){
@@ -105,13 +127,12 @@ public class LogicForContacts {
 
                 try {
                     contactsFile.deleteContact(friendList.getSelectedIndex());
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                } catch (ParseException e1) {
+                } catch (IOException | ParseException e1) {
                     e1.printStackTrace();
                 }
 
                 contactsFile.close();
+
 
                 friendShowing.remove(friendList.getSelectedIndex());
                 friendList.setModel(friendShowing);
@@ -135,16 +156,6 @@ public class LogicForContacts {
         });
     }
 
-    public void initOnlineFriends(){
-        String [] nicks = serverConnection.getAllNicks();
-        String [] ipForNicks = new String[nicks.length];
-
-
-        for(int i = 0; i < nicks.length; i++){
-            ipForNicks[i] = serverConnection.getIpForNick(nicks[i]);
-            contacts.addFriend(nicks[i], ipForNicks[i]);
-        }
-    }
 
     public void addObserver(Observer observer){
         myObservable.addObserver(observer);
