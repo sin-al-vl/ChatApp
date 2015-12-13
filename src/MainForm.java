@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Observer;
 import javax.swing.*;
 
 public class MainForm {
@@ -34,19 +35,19 @@ public class MainForm {
 
 	private void initializeMainFrame(){
 		mainFrame.setTitle("ChatApp 2015. SunRoSon");
-
 		Toolkit kit = Toolkit.getDefaultToolkit();
 		Image img = kit.getImage("res\\chat_icon.png");
 		mainFrame.setIconImage(img);
-
 		mainFrame.getContentPane().setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);
 		mainFrame.setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);
 
 		mainFrame.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				logicManager.getServerConnection().goOffline();
-				logicManager.getServerConnection().disconnect();
+				try {
+					logicManager.getServerConnection().goOffline();
+					logicManager.getServerConnection().disconnect();
+				} catch (NullPointerException ignored){}
 
 				stopProgram();
 			}
@@ -55,7 +56,6 @@ public class MainForm {
 				System.exit(0);
             }
         });
-		//mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.getContentPane().setLayout(new BorderLayout());
 	}
 

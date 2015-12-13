@@ -35,7 +35,7 @@ public class LogicForContacts {
     public void initContactsLogic(ContactsModule contacts){
         this.contacts = contacts;
         initAllButtonsAction();
-      //  initOnlineFriends();
+        //initOnlineFriends();
 
         String [] contactsList = null;
 
