@@ -17,4 +17,8 @@ public interface ContactsModule {
     String getEnteredAddress();
 
     void clearNickAndAddressField();
+
+    void setOnline(int pos);
+
+    void setOffline(int pos);
 }

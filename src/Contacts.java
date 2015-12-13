@@ -183,6 +183,14 @@ public class Contacts extends JPanel implements ContactsModule{
         contactsList.setModel(contactsShowing);
     }
 
+    public void setOnline(int pos){
+        //TODO change all online friends background on green
+    }
+
+    public void setOffline(int pos){
+        //TODO  change all offline friends background on red
+    }
+
     @Override
     public DefaultListModel getContactsShowing() {
         return contactsShowing;

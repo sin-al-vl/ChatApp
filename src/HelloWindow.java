@@ -22,6 +22,5 @@ public class HelloWindow extends JPanel{
         setLayout(new BorderLayout());
     }
 
-    private void initHelloWindowComponents(){
-    }
+    private void initHelloWindowComponents() {}
 }
