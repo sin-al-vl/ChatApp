@@ -1,7 +1,10 @@
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by Rogdan on 04.12.2015.
+ *
+ * Generate pop up window on main frame
  */
 public class PopUpWindowGenerator {
     private JFrame mainFrame;
@@ -49,12 +52,11 @@ public class PopUpWindowGenerator {
     public boolean acceptOrRejectMessage(String remoteNick, String remoteAddress){
         Object[] options = {"Receive","Reject"};
 
-        int dialogResult = JOptionPane.showOptionDialog(mainFrame,"User "+ remoteNick + " with ip " + remoteAddress +
-                        " is trying to connect with you","Receive connection",
+        int dialogResult = JOptionPane.showOptionDialog(mainFrame, "User " + remoteNick + " with ip " + remoteAddress +
+                        " is trying to connect with you", "Receive connection",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
-                null,options,options[0]);
-
+                null, options, options[0]);
         return dialogResult == JOptionPane.YES_OPTION;
     }
 

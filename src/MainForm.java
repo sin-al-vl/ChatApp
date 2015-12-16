@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Observer;
 import javax.swing.*;
 
 public class MainForm {
@@ -12,7 +11,7 @@ public class MainForm {
 		EventQueue.invokeLater(() -> {
             try {
                 MainForm window = new MainForm();
-                window.mainFrame.setVisible(true);
+               // mainFrame.setVisible(true);
             } catch (Exception e) {
 				System.exit(0);
             }
@@ -25,6 +24,7 @@ public class MainForm {
 
 	private void initialize() {
 		mainFrame = new JFrame();
+		HelloPanel s = new HelloPanel();
 		initializeLogic();
 		initializeMainFrame();
 		initializeTabbedPane();
@@ -34,8 +34,8 @@ public class MainForm {
 	}
 
 	private void initializeMainFrame(){
-		mainFrame.setTitle("ChatApp 2015. SunRoSon");
 		Toolkit kit = Toolkit.getDefaultToolkit();
+		mainFrame.setTitle(Constants.ChatApp_VERSION);
 		Image img = kit.getImage("res\\chat_icon.png");
 		mainFrame.setIconImage(img);
 		mainFrame.getContentPane().setMinimumSize(Constants.MINIMAL_PROGRAM_DIMENSION);

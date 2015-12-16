@@ -82,7 +82,7 @@ public class LogicForDialog implements Observer{
                     if (caller.getCallStatus() == null) {
                         try{
                             connection.disconnect();
-                        } catch (IOException ignored){}
+                        } catch (IOException | NullPointerException ignored){}
 
                         disconnect();
                         popUpWindow.remoteUserDoesNotRespondNotification();
